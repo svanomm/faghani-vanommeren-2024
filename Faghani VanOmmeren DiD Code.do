@@ -6,7 +6,7 @@ ssc install did_imputation, replace
 net install simulate2, from(https://janditzen.github.io/simulate2/) replace
 net install parallel, from(https://raw.github.com/gvegayon/parallel/master/) replace
 
-cd "insert path here"
+cd ""
 
 gl num_replications = 1000
 
@@ -53,14 +53,14 @@ g treat   = cond(!cohort, 0, time >= cohort)
 
 gl effect = 5
 
-g treat_effect_1 = $effect * treat // constant, homogenous
+g treat_effect_1 = $effect * treat // constant, homogeneous
 
 su cohort if treat
 g treat_effect_2 =  ($effect + cohort - r(mean)) * treat // constant, heterogenous
 
 su exposure_time if treat
-g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogenous
-g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogenous
+g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogeneous
+g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogeneous
 
 g cohorttime = (cohort) + ((cohort/5-2) * exposure_time)
 su cohorttime if treat
@@ -100,7 +100,7 @@ twoway ///
 (line treat_effect_1 time if cohort == 14) ///
 (line treat_effect_1 time if cohort == 15) ///
 (scatter scatter time, mcol(none) mlabel(label) mlabpos(12) mlabc(black) mlabs(small)) ///
-, subti("1: Homogenous, Static") xti("") yti("Treatment Effect") xlab(none) ///
+, subti("1: Homogeneous, Static") xti("") yti("Treatment Effect") xlab(none) ///
 yline(5, lp(dash) lcol(maroon)) ysc(r(0 15)) ylab(0(5)15, nogrid) ///
 legend(off) plotregion(lcol(black)) name(y1, replace)
 
@@ -124,7 +124,7 @@ twoway ///
 (line treat_effect_3 time if cohort == 14) ///
 (line treat_effect_3 time if cohort == 15) ///
 (scatter scatter time, mcol(none) mlabel(label) mlabpos(12) mlabc(black) mlabs(small)) ///
-, subti("3: Homogenous, Dynamic") xti("") yti("Treatment Effect") xlab(none) ///
+, subti("3: Homogeneous, Dynamic") xti("") yti("Treatment Effect") xlab(none) ///
 yline(5, lp(dash) lcol(maroon)) ysc(r(0 15)) ylab(0(5)15, nogrid) ///
 legend(off) plotregion(lcol(black)) name(y3, replace)
 
@@ -148,7 +148,7 @@ twoway ///
 (line treat_effect_5 time if cohort == 14) ///
 (line treat_effect_5 time if cohort == 15) ///
 (scatter scatter time, mcol(none) mlabel(label) mlabpos(12) mlabc(black) mlabs(small)) ///
-,subti("5: Homogenous, Dynamic (Decreasing)", size(medsmall)) xti("Time") yti("Treatment Effect") ///
+,subti("5: Homogeneous, Dynamic (Decreasing)", size(medsmall)) xti("Time") yti("Treatment Effect") ///
 yline(5, lp(dash) lcol(maroon)) ysc(r(-2 15)) ylab(0(5)15, nogrid) xlab(, nogrid) ///
 legend(off) plotregion(lcol(black)) name(y5, replace)
 
@@ -217,14 +217,14 @@ g treat   = cond(!cohort, 0, time >= cohort)
 
 gl effect = 5
 
-g treat_effect_1 = $effect * treat // constant, homogenous
+g treat_effect_1 = $effect * treat // constant, homogeneous
 
 su cohort if treat
 g treat_effect_2 =  ($effect + cohort - r(mean)) * treat // constant, heterogenous
 
 su exposure_time if treat
-g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogenous
-g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogenous
+g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogeneous
+g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogeneous
 
 g cohorttime = (cohort) + ((cohort/5-2) * exposure_time)
 su cohorttime if treat
@@ -529,14 +529,14 @@ keep if treated & time < 15
 
 gl effect = 5
 
-g treat_effect_1 = $effect * treat // constant, homogenous
+g treat_effect_1 = $effect * treat // constant, homogeneous
 
 su cohort if treat
 g treat_effect_2 =  ($effect + cohort - r(mean)) * treat // constant, heterogenous
 
 su exposure_time if treat
-g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogenous
-g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogenous
+g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogeneous
+g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogeneous
 
 g cohorttime = (cohort) + ((cohort/5-2) * exposure_time)
 su cohorttime if treat
@@ -819,12 +819,12 @@ replace exposure_time     = 999 if cohort == 0
 
 
 gl effect = 5
-g treat_effect_1 = $effect * treat // constant, homogenous
+g treat_effect_1 = $effect * treat // constant, homogeneous
 su cohort if treat
 g treat_effect_2 =  ($effect + cohort - r(mean)) * treat // constant, heterogenous
 su exposure_time if treat
-g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogenous
-g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogenous
+g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogeneous
+g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogeneous
 
 g cohorttime = (cohort) + ((cohort/5-2) * exposure_time)
 su cohorttime if treat
@@ -835,7 +835,8 @@ g epsilon = rnormal()
 forval i = 1/6 {
 g y_`i' = fe_unit + fe_time + treat_effect_`i' + epsilon
 reghdfe y_`i' treat, a(id time)
-return scalar b_`i' = abs(_b[treat]-$effect)
+return scalar coef_`i' = _b[treat]
+return scalar bias_`i' = _b[treat]-$effect
 }
 eret clear
 end
@@ -845,19 +846,25 @@ psimulate2, seed(123) r(${num_replications}) p(4) saving(twfe_bias_by_pc_never_t
 
 use twfe_bias_by_pc_never_treated, clear
 
-binscatter b_1 b_2 b_3 b_4 pc_never_treated, line(connect) yti("Absolute Bias (|Estimate - ATT|)") xti("% Never Treated") legend(order(1 "1: Homogenous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogenous, Dynamic" 4 "4: Heterogeneous, Dynamic") pos(6) rows(3)) plotregion(lcol(black)) yline(0, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated)." "This chart made with the binscatter package.", size())
+binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_never_treated, line(connect) yti("Absolute Bias (|Estimate - ATT|)") xti("% Never Treated") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated)." "This chart made with the binscatter package.") colors(stc1 stc2 stc3 stc4 stc5 stc6)
 
 graph export "TWFE Bias by Percent Never Treated.png", replace width(6000)
 
 
 twoway ///
-(scatter b_1 pc_never_treated, msize(tiny) mcol(%50)) ///
-(scatter b_2 pc_never_treated, msize(tiny) mcol(%50)) ///
-(scatter b_3 pc_never_treated, msize(tiny) mcol(%50)) ///
-(scatter b_4 pc_never_treated, msize(tiny) mcol(%50)) ///
-(scatter b_5 pc_never_treated, msize(tiny) mcol(%50)) ///
-(scatter b_6 pc_never_treated, msize(tiny) mcol(%50)) ///
-, yti("Absolute Bias (|Estimate - ATT|)") xti("% Never Treated") legend(order(1 "1: Homogenous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogenous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogenous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(0, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated).", size())
+(scatter coef_1 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_2 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_3 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_4 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_5 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_6 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatteri . ., mcol(stc1)) ///
+(scatteri . ., mcol(stc2)) ///
+(scatteri . ., mcol(stc3)) ///
+(scatteri . ., mcol(stc4)) ///
+(scatteri . ., mcol(stc5)) ///
+(scatteri . ., mcol(stc6)) ///
+, yti("Estimate") xti("% Never Treated") legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated).")
 
 graph export "TWFE Bias by Percent Never Treated Scatter.png", replace width(6000)
 }
@@ -918,14 +925,14 @@ merge 1:1 id time using `a', keep(3)
 return scalar pc_balanced = 100*(_N/${obs_count})
 
 gl effect = 5
-g treat_effect_1 = $effect * treat // constant, homogenous
+g treat_effect_1 = $effect * treat // constant, homogeneous
 su cohort if treat
 g treat_effect_2 =  ($effect + cohort - r(mean)) * treat // constant, heterogenous
 g exposure_time = time - cohort if cohort > 0
 replace exposure_time     = 999 if cohort == 0
 su exposure_time if treat
-g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogenous
-g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogenous
+g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogeneous
+g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogeneous
 
 g cohorttime = (cohort) + ((cohort/5-2) * exposure_time)
 su cohorttime if treat
@@ -935,7 +942,8 @@ g epsilon = rnormal()
 forval i = 1/6 {
 g y_`i' = fe_unit + fe_time + treat_effect_`i' + epsilon
 reghdfe y_`i' treat, a(id time)
-return scalar b_`i' = abs(_b[treat]-$effect)
+return scalar coef_`i' = _b[treat]
+return scalar bias_`i' = _b[treat]-$effect
 }
 eret clear
 end
@@ -945,39 +953,28 @@ psimulate2, seed(123) r(${num_replications}) p(4) saving(twfe_bias_by_pc_balance
 
 use twfe_bias_by_pc_balanced, clear
 
-format b_* %03.1f
+format bias_* coef_* %03.1f
 
-binscatter b_1 b_2 b_3 b_4 pc_balanced, line(connect) yti("Absolute Bias (|Estimate - ATT|)") xti("% Balanced") legend(order(1 "1: Homogenous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogenous, Dynamic" 4 "4: Heterogeneous, Dynamic") pos(6) rows(2)) plotregion(lcol(black)) yline(0, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.", size()) xlab(0(10)90)
-
-graph export "TWFE Bias by Percent Balanced.png", replace width(6000)
-
-twoway ///
-(scatter b_1 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_2 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_3 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_4 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_5 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_6 pc_balanced, msize(tiny) mcol(%50)) ///
-, yti("Absolute Bias (|Estimate - ATT|)") xti("% Balanced") ///
-legend(order(1 "1: Homogenous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogenous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogenous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) xlab(0(10)90) ///
-plotregion(lcol(black)) yline(0, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times).")
-
-graph export "TWFE Bias by Percent Balanced Scatter.png", replace width(6000)
-
-binscatter b_1 b_2 b_3 b_4 pc_balanced if pc_balanced>=10, line(connect) yti("Absolute Bias (|Estimate - ATT|)") xti("% Balanced") legend(order(1 "1: Homogenous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogenous, Dynamic" 4 "4: Heterogeneous, Dynamic") pos(6) rows(2)) plotregion(lcol(black)) yline(0, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.", size()) xlab(10(10)90)
+binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_balanced if pc_balanced>=10, line(connect) yti("Estimate") xti("% Balanced") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.") xlab(10(10)90) colors(stc1 stc2 stc3 stc4 stc5 stc6)
 
 graph export "TWFE Bias by Percent Balanced Crop.png", replace width(6000)
 
 twoway ///
-(scatter b_1 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_2 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_3 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_4 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_5 pc_balanced, msize(tiny) mcol(%50)) ///
-(scatter b_6 pc_balanced, msize(tiny) mcol(%50)) ///
- if pc_balanced>=10, yti("Absolute Bias (|Estimate - ATT|)") xti("% Balanced") ///
-legend(order(1 "1: Homogenous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogenous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogenous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) xlab(10(10)90) ///
-plotregion(lcol(black)) yline(0, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times).")
+(scatter coef_1 pc_balanced, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_2 pc_balanced, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_3 pc_balanced, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_4 pc_balanced, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_5 pc_balanced, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_6 pc_balanced, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatteri . ., mcol(stc1)) ///
+(scatteri . ., mcol(stc2)) ///
+(scatteri . ., mcol(stc3)) ///
+(scatteri . ., mcol(stc4)) ///
+(scatteri . ., mcol(stc5)) ///
+(scatteri . ., mcol(stc6)) ///
+ if pc_balanced>=10, yti("Estimate") xti("% Balanced") ///
+legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) xlab(10(10)90) ///
+plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times).")
 
 graph export "TWFE Bias by Percent Balanced Scatter Crop.png", replace width(6000)
 }
@@ -1042,7 +1039,7 @@ return scalar n = _N
 return scalar pc_balanced = 100*(_N/${obs_count})
 
 gl effect = 5
-g treat_effect_1 = $effect * treat // constant, homogenous
+g treat_effect_1 = $effect * treat // constant, homogeneous
 su cohort if treat
 g treat_effect_2 =  ($effect + cohort - r(mean)) * treat // constant, heterogenous
 
@@ -1054,8 +1051,8 @@ replace exposure_time     = 999 if cohort == 0
 replace exposure_time_adj = 999 if cohort == 0
 
 su exposure_time if treat
-g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogenous
-g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogenous
+g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogeneous
+g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogeneous
 
 g cohorttime = (cohort) + ((cohort/5-2) * exposure_time)
 su cohorttime if treat
@@ -1449,7 +1446,7 @@ return scalar n = _N
 return scalar pc_balanced = 100*(_N/${obs_count})
 
 gl effect = 5
-g treat_effect_1 = $effect * treat // constant, homogenous
+g treat_effect_1 = $effect * treat // constant, homogeneous
 su cohort if treat
 g treat_effect_2 =  ($effect + cohort - r(mean)) * treat // constant, heterogenous
 
@@ -1461,8 +1458,8 @@ replace exposure_time     = 999 if cohort == 0
 replace exposure_time_adj = 999 if cohort == 0
 
 su exposure_time if treat
-g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogenous
-g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogenous
+g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogeneous
+g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogeneous
 
 g cohorttime = (cohort) + ((cohort/5-2) * exposure_time)
 su cohorttime if treat
@@ -1617,14 +1614,14 @@ else {
 	return scalar effect_noise_sd = 0
 }
 
-g treat_effect_1 = ($effect + treat_modifier) * treat // constant, homogenous
+g treat_effect_1 = ($effect + treat_modifier) * treat // constant, homogeneous
 
 su cohort if treat
 g treat_effect_2 =  (($effect + treat_modifier) + cohort - r(mean)) * treat // constant, heterogenous
 
 su exposure_time if treat
-g treat_effect_3 = (($effect + treat_modifier) + exposure_time - r(mean)) * treat // dynamic, homogenous
-g treat_effect_5 = (($effect + treat_modifier) - exposure_time + r(mean)) * treat // dynamic, homogenous
+g treat_effect_3 = (($effect + treat_modifier) + exposure_time - r(mean)) * treat // dynamic, homogeneous
+g treat_effect_5 = (($effect + treat_modifier) - exposure_time + r(mean)) * treat // dynamic, homogeneous
 
 g cohorttime = (cohort) + ((cohort/5-2) * exposure_time)
 su cohorttime if treat
@@ -1699,19 +1696,19 @@ forval i = 1/6 {
 reg abs_b_`i' pc_never_treated pc_never_treated2 count_units cohort_start longest_exposure pc_balanced pc_balanced2 true_effect effect_noise_sd x_correlation_parameter x_size	
 
 if `i' == 1 {
-	local title "1: Homogenous, Static"
+	local title "1: Homogeneous, Static"
 }
 if `i' == 2 {
 	local title "2: Heterogeneous, Static"
 }
 if `i' == 3 {
-	local title "3: Homogenous, Dynamic"
+	local title "3: Homogeneous, Dynamic"
 }
 if `i' == 4 {
 	local title "4: Heterogeneous, Dynamic"
 }
 if `i' == 5 {
-	local title "5: Homogenous, Dynamic (Decreasing)"
+	local title "5: Homogeneous, Dynamic (Decreasing)"
 }
 if `i' == 6 {
 	local title "6: Heterogeneous, Dynamic (Decreasing)"
@@ -1731,19 +1728,19 @@ forval i = 1/6 {
 reg abs_b_`i' (c.pc_never_treated c.pc_never_treated2)##(c.count_units c.cohort_start c.longest_exposure c.pc_balanced c.pc_balanced2 c.true_effect c.effect_noise_sd c.true_effect#c.effect_noise_sd c.x_correlation_parameter c.x_size c.x_correlation_parameter#c.x_size) 
 
 if `i' == 1 {
-	local title "1: Homogenous, Static"
+	local title "1: Homogeneous, Static"
 }
 if `i' == 2 {
 	local title "2: Heterogeneous, Static"
 }
 if `i' == 3 {
-	local title "3: Homogenous, Dynamic"
+	local title "3: Homogeneous, Dynamic"
 }
 if `i' == 4 {
 	local title "4: Heterogeneous, Dynamic"
 }
 if `i' == 5 {
-	local title "5: Homogenous, Dynamic (Decreasing)"
+	local title "5: Homogeneous, Dynamic (Decreasing)"
 }
 if `i' == 6 {
 	local title "6: Heterogeneous, Dynamic (Decreasing)"
