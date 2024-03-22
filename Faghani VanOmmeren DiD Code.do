@@ -1,12 +1,13 @@
-version 18
+version 18 // needed for the xthdidregress function
 
-ssc install heatplot, replace
-ssc install coefplot, replace
 ssc install did_imputation, replace
-net install simulate2, from(https://janditzen.github.io/simulate2/) replace
-net install parallel, from(https://raw.github.com/gvegayon/parallel/master/) replace
+ssc install binscatter, replace
+ssc install estout, replace
+net install simulate2, from("https://janditzen.github.io/simulate2/") replace
+net install parallel, from("https://raw.github.com/gvegayon/parallel/master/") replace
+net install did2s, replace from("https://raw.githubusercontent.com/kylebutts/did2s_stata/main/ado/")
 
-cd ""
+cd "P:\svo\Diff in Diff Paper"
 
 gl num_replications = 1000
 
