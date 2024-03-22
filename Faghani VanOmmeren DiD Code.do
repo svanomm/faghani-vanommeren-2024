@@ -1755,4 +1755,3 @@ stats(N r2_a F p, fmt() ///
 labels("Row Count" "Adjusted R2" "F Statistic" "Chi-Squared p-value"))  ///
 label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Constant)
 }
-
