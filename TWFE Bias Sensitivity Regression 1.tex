@@ -1,0 +1,42 @@
+\begin{table}[htbp]\centering
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\caption{Regression Against Absolute Bias}
+\begin{tabular}{l*{6}{c}}
+\hline\hline
+                    &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}&\multicolumn{1}{c}{(3)}&\multicolumn{1}{c}{(4)}&\multicolumn{1}{c}{(5)}&\multicolumn{1}{c}{(6)}\\
+                    &\multicolumn{1}{c}{Absolute Bias, Data 1}&\multicolumn{1}{c}{Absolute Bias, Data 2}&\multicolumn{1}{c}{Absolute Bias, Data 3}&\multicolumn{1}{c}{Absolute Bias, Data 4}&\multicolumn{1}{c}{Absolute Bias, Data 5}&\multicolumn{1}{c}{Absolute Bias, Data 6}\\
+                    &Coefficient/SE         &Coefficient/SE         &Coefficient/SE         &Coefficient/SE         &Coefficient/SE         &Coefficient/SE         \\
+\hline
+% Never-Treated     &      -0.005\sym{***}&      -0.006\sym{***}&      -0.049\sym{***}&      -0.103\sym{***}&      -0.050\sym{***}&      -0.103\sym{***}\\
+                    &     (0.000)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         \\
+% Never-Treated Squared&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.001\sym{***}&       0.000\sym{***}&       0.001\sym{***}\\
+                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
+Count of Units (1000s)&       0.014\sym{*}  &       0.028\sym{***}&       0.260\sym{***}&       0.626\sym{***}&       0.255\sym{***}&       0.617\sym{***}\\
+                    &     (0.006)         &     (0.006)         &     (0.008)         &     (0.018)         &     (0.008)         &     (0.018)         \\
+First Treatment Time&       0.006\sym{***}&      -0.001         &       0.004\sym{***}&       0.139\sym{***}&       0.003\sym{***}&       0.139\sym{***}\\
+                    &     (0.000)         &     (0.000)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         \\
+Longest Treatment Exposure Time&       0.001\sym{**} &       0.037\sym{***}&       0.136\sym{***}&       0.204\sym{***}&       0.136\sym{***}&       0.203\sym{***}\\
+                    &     (0.000)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         \\
+% Balanced          &      -0.012\sym{***}&      -0.012\sym{***}&      -0.028\sym{***}&      -0.067\sym{***}&      -0.028\sym{***}&      -0.067\sym{***}\\
+                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.001)         &     (0.000)         &     (0.001)         \\
+% Balanced Squared  &       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}\\
+                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
+True Effect Size    &       0.001         &       0.001\sym{*}  &       0.000         &      -0.001         &      -0.000         &      -0.000         \\
+                    &     (0.001)         &     (0.001)         &     (0.001)         &     (0.002)         &     (0.001)         &     (0.002)         \\
+Individual-Specific Treatment Noise&       0.041\sym{***}&       0.040\sym{***}&       0.027\sym{***}&       0.038\sym{**} &       0.027\sym{***}&       0.028\sym{*}  \\
+                    &     (0.004)         &     (0.005)         &     (0.006)         &     (0.013)         &     (0.006)         &     (0.013)         \\
+Covariate Treatment Correlation&      -0.000         &       0.147\sym{***}&      -0.534\sym{***}&      -0.299\sym{***}&       0.544\sym{***}&       0.321\sym{***}\\
+                    &     (0.007)         &     (0.008)         &     (0.010)         &     (0.021)         &     (0.010)         &     (0.021)         \\
+Covariate Size      &       0.000         &       0.000         &       0.000         &       0.003         &       0.001         &       0.003         \\
+                    &     (0.001)         &     (0.001)         &     (0.002)         &     (0.003)         &     (0.002)         &     (0.003)         \\
+Constant            &       0.504\sym{***}&       0.475\sym{***}&       1.671\sym{***}&       1.271\sym{***}&       1.686\sym{***}&       1.304\sym{***}\\
+                    &     (0.016)         &     (0.018)         &     (0.022)         &     (0.048)         &     (0.022)         &     (0.048)         \\
+\hline
+Row Count           &   49116.000         &   49116.000         &   49116.000         &   49116.000         &   49116.000         &   49116.000         \\
+Adjusted R2         &       0.064         &       0.127         &       0.548         &       0.452         &       0.549         &       0.454         \\
+F Statistic         &     308.434         &     651.216         &    5412.601         &    3689.500         &    5446.903         &    3719.808         \\
+Chi-Squared p-value &       0.000         &       0.000         &       0.000         &       0.000         &       0.000         &       0.000         \\
+\hline\hline
+\multicolumn{7}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+\end{table}
