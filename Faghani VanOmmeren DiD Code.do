@@ -169,6 +169,8 @@ legend(off) plotregion(lcol(black)) name(y6, replace)
 graph combine y1 y2 y3 y4 y5 y6, xcommon imargin(zero) rows(3) graphregion(margin(zero)) ysize(8)
 
 graph export "Table 1 Treatment Effects Chart.png", replace width(6000)
+
+graph export "Table 1 Treatment Effects Chart.jpg", replace width(2000)
 }
 
 * Comparing performance of various estimators
