@@ -1520,12 +1520,14 @@ contract time treat
 twoway (hist time if !treat [fw=_freq], percent discrete col(blue%50)) (hist time if treat [fw=_freq], percent discrete col(red%50)), legend(order(1 "Untreated" 2 "Treated") pos(6) rows(1)) plotregion(lcol(black)) xti("") note("{bf: Note}: 100 randomly unbalanced datasets were generated and stacked.")
 
 graph export "Average Distribution of Data in Unbalanced Simulations by Treated.png", replace width(6000)
+graph export "Average Distribution of Data in Unbalanced Simulations by Treated.jpg", replace width(2000)
 
 use combined_data, replace
 contract time
 twoway (hist time[fw=_freq], percent discrete col(blue%50)), plotregion(lcol(black)) xti("") note("{bf: Note}: 100 randomly unbalanced datasets were generated and stacked.")
 
 graph export "Average Distribution of Data in Unbalanced Simulations.png", replace width(6000)
+graph export "Average Distribution of Data in Unbalanced Simulations.jpg", replace width(2000)
 
 use combined_data, replace
 pwcorr time treat, sig
