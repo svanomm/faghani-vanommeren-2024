@@ -169,7 +169,6 @@ legend(off) plotregion(lcol(black)) name(y6, replace)
 graph combine y1 y2 y3 y4 y5 y6, xcommon imargin(zero) rows(3) graphregion(margin(zero)) ysize(8)
 
 graph export "Table 1 Treatment Effects Chart.png", replace width(6000)
-
 graph export "Table 1 Treatment Effects Chart.jpg", replace width(2000)
 }
 
@@ -451,6 +450,7 @@ forval j = 1/6 {
 
 graph combine ${graph_list}, xcommon rows(10) name(combinedhist, replace) imargin(0 0 0 0)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. Datasets have 20,000 observations. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package.", size(tiny))
 graph export "Histograms of Monte Carlo Estimates 1.png", replace width(6000)
+graph export "Histograms of Monte Carlo Estimates 1.jpg", replace width(2000)
 } 
 }
 
@@ -779,6 +779,7 @@ forval j = 1/6 {
 
 graph combine ${graph_list}, xcommon rows(10) name(combinedhist, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package.", size(tiny))
 graph export "Histograms of Monte Carlo Estimates 2.png", replace width(6000)
+graph export "Histograms of Monte Carlo Estimates 2.jpg", replace width(2000)
 } 
 }
 
@@ -852,7 +853,7 @@ use twfe_bias_by_pc_never_treated, clear
 binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_never_treated, line(connect) yti("Absolute Bias (|Estimate - ATT|)") xti("% Never Treated") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated)." "This chart made with the binscatter package.") colors(stc1 stc2 stc3 stc4 stc5 stc6)
 
 graph export "TWFE Bias by Percent Never Treated.png", replace width(6000)
-
+graph export "TWFE Bias by Percent Never Treated.jpg", replace width(2000)
 
 twoway ///
 (scatter coef_1 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
@@ -870,6 +871,7 @@ twoway ///
 , yti("Estimate") xti("% Never Treated") legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated).")
 
 graph export "TWFE Bias by Percent Never Treated Scatter.png", replace width(6000)
+graph export "TWFE Bias by Percent Never Treated Scatter.jpg", replace width(2000)
 }
 
 * TWFE Bias by % balanced
@@ -961,6 +963,7 @@ format bias_* coef_* %03.1f
 binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_balanced if pc_balanced>=10, line(connect) yti("Estimate") xti("% Balanced") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.") xlab(10(10)90) colors(stc1 stc2 stc3 stc4 stc5 stc6)
 
 graph export "TWFE Bias by Percent Balanced Crop.png", replace width(6000)
+graph export "TWFE Bias by Percent Balanced Crop.jpg", replace width(2000)
 
 twoway ///
 (scatter coef_1 pc_balanced, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
@@ -980,6 +983,7 @@ legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homog
 plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times).")
 
 graph export "TWFE Bias by Percent Balanced Scatter Crop.png", replace width(6000)
+graph export "TWFE Bias by Percent Balanced Scatter Crop.jpg", replace width(2000)
 }
 
 * Comparing performance of various estimators by % balanced
@@ -1218,6 +1222,7 @@ forval j = 1/6 {
 
 graph combine ${graph_list}, xcommon ycommon rows(10) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
 graph export "Scatters by Percent Balanced Common Scale.png", replace width(6000)
+graph export "Scatters by Percent Balanced Common Scale.jpg", replace width(2000)
 
 * relative scale
 {
@@ -1274,6 +1279,7 @@ forval j = 1/6 {
 
 graph combine ${graph_list}, xcommon rows(10) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
 graph export "Scatters by Percent Balanced Relative Scale.png", replace width(6000)
+graph export "Scatters by Percent Balanced Relative Scale.jpg", replace width(2000)
 }
 } 
 
@@ -1327,6 +1333,7 @@ forval j = 1/6 {
 
 graph combine ${graph_list}, xcommon ycommon rows(10) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "This chart made with the binscatter package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
 graph export "Binscatters by Percent Balanced Common Scale.png", replace width(6000)
+graph export "Binscatters by Percent Balanced Common Scale.jpg", replace width(2000)
 
 * relative scale
 {
@@ -1383,6 +1390,7 @@ forval j = 1/6 {
 
 graph combine ${graph_list}, xcommon rows(10) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "This chart made with the binscatter package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
 graph export "Binscatters by Percent Balanced Relative Scale.png", replace width(6000)
+graph export "Binscatters by Percent Balanced Relative Scale.jpg", replace width(2000)
 }
 } 
 
