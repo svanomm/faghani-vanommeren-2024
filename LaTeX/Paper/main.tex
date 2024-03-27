@@ -12,11 +12,12 @@
 \usepackage[font=bf]{caption}
 \usepackage{xcolor}
 \usepackage[bottom]{footmisc}
+
 \hypersetup{
     colorlinks,
     linkcolor={black},
-    citecolor={blue!50!black},
-    urlcolor={blue!80!black}
+    citecolor={blue!35!black},
+    urlcolor={blue!35!black}
 }
 \addbibresource{bibliography.bib}
 
@@ -27,14 +28,17 @@
 \geometry{left=1.0in,right=1.0in,top=1.0in,bottom=1.0in}
 
 \begin{document}
-
 \begin{titlepage}
 \title{Staggered Difference-in-Differences Estimation for Antitrust Analysis: A Review of New Literature and Recommendations for Practitioners}
-\author{Hassan Faghani\thanks{Berkeley Research Group} \and Steven VanOmmeren\thanks{Berkeley Research Group. \\\\ We thank several colleagues at Berkeley Research Group for providing helpful comments in forming this paper, including [[...]].}}
+\author{Hassan Faghani\thanks{Berkeley Research Group.} \and Steven VanOmmeren\thanks{
+Berkeley Research Group. \\\\ We thank several colleagues at Berkeley Research Group for providing helpful comments in forming this paper, including [[...]]. The views expressed herein are solely those of the authors, who are responsible for the content, and do not necessarily represent the views of Berkeley Research Group. Any and all mistakes are our own. A replication package for our analysis is available at \url{https://github.com/svanomm/faghani-vanommeren-2024/}.
+}
+}
+
 \date{\today}
 \maketitle
 \begin{abstract}
-\noindent \\
+\noindent 
 The aim of this paper is twofold: First, we bring antitrust practitioners and applied econometricians up to speed on the new literature surrounding difference-in-differences (DiD) methods. Second, we aim to provide a resource for sound DiD analysis in expert testimony in light of these developments. We review relevant new papers and their most important conclusions. We then discuss the antitrust implications of three important topics: parallel trends, the not-yet-treated group, and data with customer entry and exit. We supplement this discussion with Monte Carlo analysis, in which we compare the performance of DiD estimators and quantify certain types of bias. We discuss the many sensitivities and robustness checks that should underly expert testimony going forward. Along the way, we aim to assist future expert analysis by centralizing the new work and interpreting its results. DiD theory has come a long way in the academic literature since the 2010s, and we distill that knowledge into what we consider to be the new standard for robust DiD results in 2024.\\
 \vspace{0in}\\
 \noindent\textbf{Keywords:} difference-in-differences, staggered treatment, heterogeneity, antitrust
@@ -55,7 +59,7 @@ The aim of this paper is twofold: First, we bring antitrust practitioners and ap
 
 \newpage
 \section{Introduction} \label{sec:introduction}
-Understanding the effects of policy changes is among the fundamental problems of applied social sciences. In economic and legal studies, one of the most popular techniques to measure policy changes is Difference-in-Differences (“DiD”) analysis.\footnote{We wrote a high-level summary of DiD and the new literature developments in early 2023. This paper goes into much more econometric detail and builds intuition for the various new tests and estimators. We also cite several papers that have come out since then. \url{https://www.law360.com/articles/1568455/the-difference-in-differences-antitrust-analysis-is-evolving}.}  At its core, DiD is relatively simple to understand, contributing to its popularity. In DiD, a group of entities, such as firms, stores, or customers, that have been affected by an event of interest are compared against another group of entities that were not affected. We then analyze the trend over time of this difference; a difference (over time) in differences (between the affected and unaffected). DiD essentially combines two common impact methods (yardstick and before-after analysis) to yield a more robust estimate. The underlying assumption is that the studied policy is the only meaningful change between the two groups once the treatment starts. The affected group is referred to as the “treatment group” and the unaffected is the “control group.” A simple DiD visualization is shown below in Figure \ref{fig:did-diagram}.
+Understanding the effects of policy changes is among the fundamental problems of applied social sciences. In economic and legal studies, one of the most popular techniques to measure the effects of policy changes is Difference-in-Differences (“DiD”) analysis.\footnote{We wrote a high-level summary of DiD and the new literature developments in early 2023. This paper goes into much more econometric detail and builds intuition for the various new tests and estimators. We also cite several papers that have come out since then. \url{https://www.law360.com/articles/1568455/the-difference-in-differences-antitrust-analysis-is-evolving}.}  At its core, DiD is relatively simple to understand, contributing to its popularity. In DiD, a group of entities, such as firms, stores, or customers, that have been affected by an event of interest are compared against another group of entities that were not affected. We then analyze the trend over time of this difference; a difference (over time) in differences (between the affected and unaffected). DiD essentially combines two common impact methods (yardstick and before-after analysis) to yield a more robust estimate. The underlying assumption is that the studied policy is the only meaningful change between the two groups once the treatment starts. The affected group is referred to as the “treatment group” and the unaffected is the “control group.” A simple DiD visualization is shown below in Figure \ref{fig:did-diagram}.
 \begin{figure}[H]
     \centering
     \caption{Example of Simple DiD Analysis}
@@ -89,7 +93,7 @@ One can imagine several other complications of applied DiD analysis. An importan
 
 A large body of literature on DiD analysis has appeared in recent years which aims to better understand how such complications affect our regression results. Academics have largely confirmed the suspicions of careful applied econometricians by proving that results are biased if we don’t appropriately account for the studied policy and its effects. But of particular interest, the new research has revealed a bias in DiD estimates inherent to the staggered nature of the treatment mechanism, along with other such inherent biases. In the years since, the literature has provided several new estimators that are robust to certain types of misspecifications, detailed sets of assumptions that underly their results, and many other sensitivities and checks to diagnose issues common to DiD analysis.
 
-We review the developments in DiD literature in \hyperref[sec:literature]{Section II}. \hyperref[sec:analysis]{Section III} summarizes the new estimators and tests we think are best suited for antitrust econometric work. Section \hyperref[sec:antitrust]{Section IV} further discusses three topics of particular interest for antitrust practitioners. Results using a Monte Carlo analysis are reported in \hyperref[sec:analysis]{Section V}. In \hyperref[sec:conclusion]{Section VI} we conclude.
+We review the developments in DiD literature in \hyperref[sec:literature]{Section II}. \hyperref[sec:analysis]{Section III} summarizes the new estimators and tests we think are best suited for antitrust econometric work. \hyperref[sec:antitrust]{Section IV} further discusses three topics of particular interest for antitrust practitioners. Results using a Monte Carlo analysis are reported in \hyperref[sec:analysis]{Section V}. In \hyperref[sec:conclusion]{Section VI} we conclude.
 
 \section{Review Of Recent Developments In Staggered DiD} \label{sec:literature}
 \begin{singlespace*}
@@ -130,7 +134,7 @@ Sign reversal is unlikely to occur in practice, but bias associated from negativ
     \includegraphics[width=6in]{Figures/Baker et al. (2022) Figure 2.png}
     \label{fig:baker-fig2}
 \end{figure}
-\noindent \citet{sunabr2021a} extend Prof. Goodman-Bacon’s result to dynamic DiD models, which measure treatment effects over time rather than a single average. They show that dynamic models suffer from the same weighting and forbidden comparison issues as the single DiD coefficient. Their results also cast doubt on the validity of common parallel trends tests, which we discuss below.\footnote{See also, \citet{roth2023s}, p. 2233}  This is a consequence of the negative weights underlying the dynamic DiD coefficients.
+\noindent \citet{sunabr2021a} extend Prof. Goodman-Bacon’s result to dynamic DiD models, which measure treatment effects over time rather than a single average. They show that dynamic models suffer from the same weighting and forbidden comparison issues as the single DiD coefficient. Their results also cast doubt on the validity of common parallel trends tests, which we discuss below.\footnote{See also, \citet{roth2023s}, p. 2233.}  This is a consequence of the negative weights underlying the dynamic DiD coefficients.
 
 Other papers have confirmed the unexpected results hidden within DiD coefficients in staggered settings and helped advance our theoretical knowledge. For example, \citet{CS2021} carefully explain how the not-yet-treated group that forms as a consequence of staggered treatment can be incorporated into DiD analysis, as well as discussing how covariates affect interpretation of treatment effects. \citet{de2020two} decompose the TWFE coefficient similarly to Goodman-Bacon and provide additional intuition on the negative weighting problem. \citet{borusyak2024revisiting} show that unbiased treatment effect estimates can be recovered under a standard regression-based imputation procedure, while also advancing the mathematical rigor of DiD estimation under more general conditions. \citet{wooldridge2021two} establishes the equivalence of TWFE-type models with Mundlak estimators and pushes the limits of flexible interaction between treatment effects and covariates.
 
@@ -140,7 +144,7 @@ Along with diagnosing the forbidden comparisons problem with staggered treatment
 
 As a result of the seminal papers of Goodman-Bacon, Sun and Abraham, Wooldridge, Callaway and Sant’Anna, Borusyak et al., de Chaisemartin and d’Haultfoeuille, among others, there has been an influx of new papers on DiD theory. A simple search for DiD-related terms finds over 180 papers concerning DiD theory since 2018.\footnote{\url{https://arxiv.org/search/advanced?advanced=&terms-0-term=\%22difference-in-difference\%22&terms-0-operator=AND&terms-0-field=abstract&terms-1-term=\%22diff-in-diff\%22&terms-1-operator=OR&terms-1-field=abstract&terms-2-term=TWFE&terms-2-operator=OR&terms-2-field=abstract&terms-3-term=\%22two+way+fixed+effects\%22&terms-3-operator=OR&terms-3-field=abstract&classification-economics=y&classification-physics_archives=all&classification-include_cross_list=include&date-filter_by=date_range&date-year=&date-from_date=2018&date-to_date=2024-02-20&date-date_type=submitted_date&abstracts=hide&size=200&order=-submitted_date} (last accessed February 20, 2024).}  Prof. Goodman-Bacon’s work is currently cited by approximately 5,000 papers.\footnote{\url{https://scholar.google.com/scholar?cites=604067916365634144&as_sdt=20005&sciodt=0,9&hl=en} (last accessed February 20, 2024).}
 
-This new DiD literature has already become a lecture topic in current PhD-level econometrics courses.\footnote{\url{https://donskerclass.github.io/files/pdf/CausalEconometricsSyllabus.pdf} as of March 12, 2024.}  It has also been the subject of several conferences and seminars in the past few years,\footnote{Some examples include: UCLA, “Difference-In-Difference Panel Discussion and Mini Conference” in May 2023; YoungStatS, “Advances in Difference-in-Differences in Econometrics” on December 15, 2021, presented; Mixtape Sessions, “Advanced Difference-in-Differences” seminar on April 21, 2023; Northwestern University, “Advanced Causal Inference Workshop” on August 13-17, 2023; Emory University, “Causal Inference Using Difference in Differences” on November 10, 2023.} as well as special journal issues.\footnote{The Econometrics Journal “Virtual Issue: The Econometrics of Treatment Effects.” \url{https://academic.oup.com/ectj/pages/treatment-effects-vi as of March 14, 2024.}} The new literature is also entering antitrust expert analysis as well. The authors have personally encountered some of the new papers in antitrust expert testimony, including the Callaway and Sant’Anna and Goodman-Bacon papers.
+This new DiD literature has already become a lecture topic in current PhD-level econometrics courses.\footnote{\url{https://donskerclass.github.io/files/pdf/CausalEconometricsSyllabus.pdf} as of March 12, 2024.}  It has also been the subject of several conferences and seminars in the past few years,\footnote{Some examples include: UCLA, “Difference-In-Difference Panel Discussion and Mini Conference” in May 2023; YoungStatS, “Advances in Difference-in-Differences in Econometrics” on December 15, 2021, presented; Mixtape Sessions, “Advanced Difference-in-Differences” seminar on April 21, 2023; Northwestern University, “Advanced Causal Inference Workshop” on August 13-17, 2023; Emory University, “Causal Inference Using Difference in Differences” on November 10, 2023.} as well as special journal issues.\footnote{The Econometrics Journal “Virtual Issue: The Econometrics of Treatment Effects.” \url{https://academic.oup.com/ectj/pages/treatment-effects-vi as of March 14, 2024.}} The new literature is also entering antitrust expert analysis as well. The authors have personally encountered some of the new papers in antitrust expert testimony, including \citet{CS2021} and \citet{goodman-bacon2021a}.
 
 \section{Robust Analysis with Staggered Treatment} \label{sec:equations}
 
@@ -171,7 +175,7 @@ In this equation, “$t_r$” is relative time, i.e. the number of time periods 
 \begin{equation}
     y_{it} = \sum_{v=c}^C\sum_{p=r}^R\left(\gamma_{vp}\cdot\mathbbm{1}[t_r=p]\cdot \mathbbm{1}[\text{cohort}_i=v]\right) + \alpha_i + \lambda_t + \epsilon_{it},
 \end{equation}
-The \citet{wooldridge2021two} estimator is essentially an extension of the Sun and Abraham method.\footnote{Prof. Wooldridge offers two equivalent ways of estimating cohort-specific treatment effects: regular TWFE-style models, and Mundlak-style estimators which include group averages. For simplicity, we show the TWFE-style approach.}  The Wooldridge model not only measures treatment effects by cohort and over time, but it also allows for the treatment effect to vary with respect to covariates.\footnote{Prof. Wooldridge and other papers tend to focus on time-invariant control variables; these are seen as “safer” to include in DiD analysis because it’s less likely that the controls would affect treatment status and vice versa. Special care must be given to time-varying covariates to ensure their exogeneity to the treatment effect. For new research on interpreting DiD effects with time-varying controls, see \citet{caetano2023} and \citet{wooldridge2023nonlinear}, C60 (Section 7.3).} Besides allowing more flexibility in the model, an advantage of this framework is that the parallel trends assumption becomes more realistic: control and treatment units would move similarly over time after controlling for observed covariates in the absence of the treatment effect. With $L$ covariates, and using $\dot{x}$ to represent cohort-demeaned controls, the model is:\footnote{This is Prof. Wooldridge’s equation 6.33 on p. 44. The average marginal effect of treatment with this method is equivalent to Stata’s \texttt{xthdidregress twfe} command with unit-level clustered errors. As explained in the paper, demeaning $x$ by cohort is not necessary for correct treatment effect estimation, but it makes interpreting the other coefficients easier.}
+The \citet{wooldridge2021two} estimator is essentially an extension of the Sun and Abraham method.\footnote{Prof. Wooldridge offers two equivalent ways of estimating cohort-specific treatment effects: regular TWFE-style models, and Mundlak-style estimators which include group averages. For simplicity, we show the TWFE-style approach.}  The Wooldridge model not only measures treatment effects by cohort and over time, but it also allows for the treatment effect to vary with respect to covariates.\footnote{Prof. Wooldridge and other papers tend to focus on time-invariant control variables; these are seen as “safer” to include in DiD analysis because it’s less likely that the controls would affect treatment status and vice versa. Special care must be given to time-varying covariates to ensure their exogeneity to the treatment effect. For new research on interpreting DiD effects with time-varying controls, see \citet{caetano2023} and \citet{wooldridge2023nonlinear}, C60 (Section 7.3).} Besides allowing more flexibility in the model, an advantage of this framework is that the parallel trends assumption becomes more realistic: control and treatment units would move similarly over time \textit{after controlling for observed covariates} in the absence of the treatment effect. With $L$ covariates, and using $\dot{x}$ to represent cohort-demeaned controls, the model is:\footnote{This is Prof. Wooldridge’s equation 6.33 on p. 44. The average marginal effect of treatment with this method is equivalent to Stata’s \texttt{xthdidregress twfe} command with unit-level clustered errors. As explained in the paper, demeaning $x$ by cohort is not necessary for correct treatment effect estimation, but it makes interpreting the other coefficients easier.}
 \begin{multline}
     y_{it} = \sum_{v=c}^C\sum_{q=t}^T\left(\gamma_{vq}\cdot\mathbbm{1}[t=q]\cdot \mathbbm{1}[\text{cohort}_i=v]\right) + \alpha_i + \lambda_t \\
     + \sum_{x=k}^L\sum_{v=c}^C\sum_{q=t}^T\left(\theta_{vq}\cdot \mathbbm{1}[t=q]\cdot \mathbbm{1}[\text{cohort}_i=v] \cdot \dot{x}_{itk}\right) + \alpha_i X_{it} + \lambda_t X_{it} + \beta X_{it} +\epsilon_{it},
@@ -205,13 +209,13 @@ We now discuss three topics that we consider particularly important for antitrus
 \subsection{Cautions on Parallel Trends} \label{sec:parallel-trends}
 The new literature has shown that common parallel trends tests can suffer from bias in the presence of heterogeneity. Additionally, while several new estimators have been proposed for testing parallel trends in the presence of heterogeneous effects, recent research shows that visual examination of coefficients is not a reliable assessment for many of the new estimators.\footnote{\citet{roth2024a}, p. 7 (“The first practical takeaway from these results is that the default event-studies from CS, dCDH, and BJS should not be interpreted in the same way as traditional dynamic TWFE event-study plots. … One should therefore not apply the typical heuristics for visual inference—e.g. looking for a discontinuity or kink at the treatment date—that may be familiar from TWFE event-studies in the non-staggered case.”).}  Antitrust practitioners arguing either for or against parallel trends in a DiD model should follow guidance from the new literature. In both cases, expert opinion should be supported with analysis demonstrating (lack of) \textit{economically} significant differences between the treatment and control groups, not just statistically significant results.
 
-Conventional parallel trends test results should always be taken with caution. \citet{roth2023s} summarize many issues with testing for parallel trends brought up in recent years. First, based on how they are conducted, the tests can suffer from low power in smaller datasets.\footnote{\citet{roth2023s}, p. 2233.}  Second, selecting models based on what “passes” the parallel trends test induces testing bias.\footnote{See \citet{roth2022a} for an in-depth discussion of such biases and practical considerations.}  Third, in large datasets, it is very likely that the parallel trends testing coefficients will be statistically significant. This is true for most DiD models in antitrust analysis with microdata, in our experience. But the magnitude of the violation is more important. Practitioners should try to size the potential bias of observed parallel trends issues, rather than simply rejecting the usefulness of DiD in general. 
+Conventional parallel trends test results should always be taken with caution. \citet{roth2023s} summarize many issues with testing for parallel trends brought up in recent years. First, based on how they are conducted, the tests can suffer from low power in smaller datasets.\footnote{\citet{roth2023s}, p. 2233.}  Second, selecting models based on what “passes” the parallel trends test induces testing bias.\footnote{See \citet{roth2022a} for an in-depth discussion of such biases and practical considerations.}  Third, in large datasets, it is very likely that the parallel trends testing coefficients will be statistically significant. This is true for most DiD models in antitrust analysis with transactional data, in our experience. But the magnitude of the violation is more important. Practitioners should try to size the potential bias of observed parallel trends issues, rather than simply rejecting the usefulness of DiD in general. 
 
-\citet{rambachan2023more} (discussed in \citet{roth2023s}) pose a framing question: How large would the bias from unparallel trends have to be to make the resulting treatment effect statistically insignificant?\footnote{\citet{rambachan2023more} at Section 6.2. \citet{roth2023s} at section 4.5 (“one type of restriction [Rambachan and Roth] consider states that the magnitude of the post-treatment violation of parallel trends can be no larger than a constant M times the maximal pre-treatment violation. … This indicates that to invalidate the conclusion of a positive effect, we would need to allow for a post-treatment violation of parallel trends [M] times larger than the maximal pretreatment violation.”).}  Several sensitivities follow from this question, ranging from visual inspection to alternative model specifications.\footnote{See \hyperref[sec:appendixa]{our Sensitivities Appendix below} for more detail.}  This framework is of particular interest for antitrust impact analysis, where bias from lack of parallel trends can make or break an expert’s conclusion or lead to \textit{Daubert} exclusion. Similar to a confidence interval, experts should know how far the parallel trends assumption can be bent until their model breaks. Importantly, the literature seems to point to the conclusion that a statistically significant (but economically insignificant) difference in parallel trends, particularly in large datasets, is not a fully reliable measure to invalidate DiD results.
+\citet{rambachan2023more} (discussed in \citet{roth2023s}) pose a framing question: How large would the bias from unparallel trends have to be to make the resulting treatment effect statistically insignificant?\footnote{\citet{rambachan2023more} at Section 6.2. \citet{roth2023s} at section 4.5 (“one type of restriction [Rambachan and Roth] consider states that the magnitude of the post-treatment violation of parallel trends can be no larger than a constant M times the maximal pre-treatment violation. … This indicates that to invalidate the conclusion of a positive effect, we would need to allow for a post-treatment violation of parallel trends [M] times larger than the maximal pretreatment violation.”).}  Several sensitivities follow from this question, ranging from visual inspection to alternative model specifications.\footnote{See \hyperref[sec:appendixa]{our Sensitivities Appendix below} for more detail.}  This framework is of particular interest for antitrust impact analysis, where bias from lack of parallel trends can make or break an expert’s conclusion or lead to \textit{Daubert} exclusion. Similar to a confidence interval, experts should know how far the parallel trends assumption can be bent until their model breaks. Importantly, the literature seems to point to the conclusion that a statistically significant, but economically insignificant, difference in parallel trends, particularly in large datasets, is not a fully reliable measure to invalidate DiD results.
 
 An additional caution on parallel trends comes when covariates are added to the regression. While adding covariates can make the parallel trends assumption more realistic (trends in outcomes are parallel \textit{after conditioning on covariates}), DiD models implicitly assume that any covariates are exogenous to the policy effect, and/or that covariates enter linearly into the conditional mean function. Failing those assumptions will bias your results in an unknown direction, and the new estimators are not robust to these types of misspecification. The flexible Wooldridge model discussed above allows policy effects to vary by covariates, but still assumes that the treatment effect does not influence the covariates. Practitioners should weigh the benefits of including covariates with the risk of bias from endogeneity in their models.
 
-Finally, the presence of two groups of effective controls (never-treated and not-yet-treated) means that parallel trends could hold for one (or both) of these groups. Some papers have defined separate parallel trends assumptions for each group (Callaway and Sant’Anna), while others treat them the same (Borusyak,  Gardner).\footnote{\citet{CS2021}, p. 204 (Assumptions 4 and 5). \citet{borusyak2024revisiting}, p. 8 (Assumption 1). \citet{gardner2022a}, Equation 1.}  Researchers should consider which of these groups is more likely to satisfy parallel trends based on context. But in practice, the assumption is often based on data availability.\footnote{\citet{CS2021}, p. 205.}  We recommend running three types of models if data is available: one using the never-treated group, one with the not-yet-treated group, and one using both groups. Substantially different results from these models may indicate a compositional difference between the two control groups and may be worth exploring. Additionally, many of the new estimators in the literature allow you to specify which group you want to use as a control, though they tend to default to the never-treated group.
+Finally, the presence of two groups of effective controls (never-treated and not-yet-treated) means that parallel trends could hold for one (or both) of these groups. Some papers have defined separate parallel trends assumptions for each group (\citet{CS2021}), while others treat them the same (\citet{borusyak2024revisiting}, \citet{gardner2022a}).\footnote{\citet{CS2021}, p. 204 (Assumptions 4 and 5). \citet{borusyak2024revisiting}, p. 8 (Assumption 1). \citet{gardner2022a}, Equation 1.}  Researchers should consider which of these groups is more likely to satisfy parallel trends based on context. But in practice, the assumption is often based on data availability.\footnote{\citet{CS2021}, p. 205.}  We recommend running three types of models if data is available: one using the never-treated group, one with the not-yet-treated group, and one using both groups. Substantially different results from these models may indicate a compositional difference between the two control groups and may be worth exploring. Additionally, many of the new estimators in the literature allow you to specify which group you want to use as a control, though they tend to default to the never-treated group.
 
 In any case, we think that the new literature has weakened the assurance of postestimation parallel trends tests. If you are not sure that the regression is correctly specified, parallel trends tests may provide an opposite conclusion to the truth. If you have small or noisy data, your test may be underpowered. If you have large data, your test may reject parallel trends but with an economically insignificant effect to the results. In expert testimony, work in support of a DiD analysis should put more effort into providing sensitivities such as in Rambachan and Roth’s “what-if” analysis, as well as giving theoretical justification of approximately conditional parallel trends. Work against DiD analysis should not rest on a statistically significant postestimation parallel trends test as a complete invalidation of a model; instead, practitioners should demonstrate that the resulting bias is economically meaningful. This could mean showing that damages disappear under a model which corrects for uncommon trends, or that the but-for predictions of the model are substantially different from reality.
 \subsection{Not-Yet-Treated Group as a Source of Identification}
@@ -221,7 +225,7 @@ Classical DiD models require a control group of units that have never experience
 
 The not-yet-treated DiD model is also different from a standard before-after regression. This is because while the before-after model (with one treatment time) has no unaffected units after the start of treatment, in a staggered setting, the data allow a contemporaneous effective control group for all cohorts except the very last one.\footnote{This is because if all cohorts eventually become treated, then there cannot be untreated units by the last time period. Some papers suggest removing the last period of data from the model to treat the last cohort as a “never-treated” group. \citet{wooldridge2021two}, p. 52.}  For example, by the time cohort 1 becomes treated, cohort 2 has not been treated yet, so at time 1, it is a control group for cohort 1. Similarly, cohort 3 is a control for cohort 2 at time 2, and so on. We just need to be careful in setting up the DiD model to not allow for the forbidden comparisons inherent in the single coefficient model.
 
-As we discussed in Section \ref{sec:literature} above, negative weights arise because the TWFE DiD estimate includes already-treated units as part of the control group.  Because of this, units that begin their treatment early in the data are more likely to suffer from negative weights. While this issue occurs whether you include the not-yet-treated group or not, removing the group could increase the negative weight bias by removing correct component DiDs from the weighted average TWFE effect. Also, with more treatment cohorts, already-treated units will be used as effective controls more often. Antitrust practitioners should keep this in mind when examining a TWFE model. Early-treated units have the highest risk of negative weights neutralizing their treatment effect. In the case of a price-fixing conspiracy that dissolves over time due to cheating, the price-increasing effects may be concentrated within earlier treatment cohorts. A naïve TWFE model could substantially bias the estimated effect in this scenario.
+As we discussed in Section \hyperref[sec:literature]{Section II} above, negative weights arise because the TWFE DiD estimate includes already-treated units as part of the control group.  Because of this, units that begin their treatment early in the data are more likely to suffer from negative weights. While this issue occurs whether you include the not-yet-treated group or not, removing the group could increase the negative weight bias by removing correct component DiDs from the weighted average TWFE effect. Also, with more treatment cohorts, already-treated units will be used as effective controls more often. Antitrust practitioners should keep this in mind when examining a TWFE model. Early-treated units have the highest risk of negative weights neutralizing their treatment effect. In the case of a price-fixing conspiracy that dissolves over time due to cheating, the price-increasing effects may be concentrated within earlier treatment cohorts. A naïve TWFE model could substantially bias the estimated effect in this scenario.
 \subsection{Unbalanced Panels and the Always-Treated Group}
 It is often the case that units (e.g. customers, suppliers, stores) are not present for the entire period of the data. In practice, units can enter into the analysis or exit in two ways. First, units can be partially present in the data because of a sampling issue. Second, units can be present in the data because they truly enter or exit in the period of the analysis (i.e. with no sampling issue). While the first type of partial presence is an important issue in itself, we focus on the second situation. Entry and exit within a staggered treatment design brings additional sources of concern for DiD analysis.
 
@@ -260,7 +264,7 @@ We simulate data with the following setup. There are 1,000 units (customers) and
     \text{Effect 4} &= (5 + \text{cohortTime}_{it} - \overline{\text{cohortTime}})\cdot D_{it} \\
     \text{Effect 5} &= (5 - \text{exposure}_{it} + \overline{\text{exposure}})\cdot D_{it} \\
     \text{Effect 6} &= (5 - \text{cohortTime}_{it} + \overline{\text{cohortTime}})\cdot D_{it} \\
-    \text{cohortTime} &= \text{cohort}_i + \frac{\text{cohort}_i-10}{5}\cdot \text{exposure}_{it}.\\
+    \text{cohortTime} &= \text{cohort}_i + \frac{\text{cohort}_i-10}{5}\cdot \text{exposure}_{it}.
 \end{align*}
 These treatment effects allow us to identify how heterogeneous and/or dynamic effects factor into the DiD estimators. All effects are normalized so that the average treatment effect on the treated (ATT) is equal to 5.
 
@@ -272,7 +276,7 @@ Shown below are the true treatment effects by cohort for the 6 treatment effects
 \begin{figure}[H]
     \centering
     \caption{Treatment Effects in Simulated Data}
-    \includegraphics[width=6in]{Figures/Table 1 Treatment Effects Chart.png}
+    \includegraphics[width=6in]{Figures/Table 1 Treatment Effects Chart.jpg}
     \label{fig:treat-effects}
 \end{figure}
 \subsection{Results}
@@ -306,11 +310,11 @@ Comparing Treated with Not-Yet-Treated Only}
 \subsubsection{TWFE Bias by Composition of Control Group}
 Next, we analyze how the composition of the control group varies the resulting TWFE bias. The horizontal axis in Figure \ref{fig:pc-nevertreat} below is the percentage of never-treated units in the control group; 0 means only not-yet-treated observations (no unaffected units), while 100 means only never-treated. The vertical axis is the  estimator bias (estimated effect minus true effect). As expected, when treatment effects are homogeneous and static, there is no bias regardless of never-treated composition. Next, the homogeneous and dynamic specification (the green line) has extreme bias when there are only not-yet-treated observations; the bias decreases quickly as we add never-treated units into the control group. The heterogeneous treatment effects (red and orange) are much less affected than the homogeneous dynamic effect (green). Interestingly, the bias from our heterogeneous and dynamic specification (orange) decreases until about 35\% never-treated, then increases as the percent of never-treated increases.
 
-We also perform a sensitivity analysis to check if these (and other) findings are robust to alternative data specifications. We randomly varied the number of units, number of time periods, percent never-treated, first treatment time, last treatment time, percent balanced, treatment effect size and sign, individual-specific treatment heterogeneity, covariate effect size and sign, and covariate correlation with treatment status. See \hyperref[sec:appendixb]{Appendix B} for these additional results.
+We also perform a sensitivity analysis to check if these (and other) findings are robust to alternative data specifications. We randomly varied the number of units, number of time periods, percent never-treated, first treatment time, last treatment time, percent balanced, treatment effect size and sign, individual-specific treatment heterogeneity, covariate effect size and sign, and covariate correlation with treatment status. See \hyperref[sec:appendixb]{Appendix B}, \hyperref[tab:sensitivity-table]{Table 3} and \hyperref[tab:sensitivity-table-interact]{Table 4} for these additional results.
 \begin{figure}[H]
     \centering
     \caption{TWFE Bias by Percent Never-Treated in the Data}
-    \includegraphics[width=6in]{Figures/TWFE Bias by Percent Never Treated.png}
+    \includegraphics[width=6in]{Figures/TWFE Bias by Percent Never Treated.jpg}
     \label{fig:pc-nevertreat}
 \end{figure}
 \subsubsection{DiD Estimator Bias for Unbalanced Panels}
@@ -318,17 +322,17 @@ To investigate the effects of unbalanced data on DiD estimators, we randomly gen
 \begin{figure}[H]
     \centering
     \caption{TWFE Bias by Percent Balanced Data}
-    \includegraphics[width=6in]{Figures/TWFE Bias by Percent Balanced Crop.png}
+    \includegraphics[width=6in]{Figures/TWFE Bias by Percent Balanced Crop.jpg}
     \label{fig:pc-balance}
 \end{figure}
 \noindent
 Our analysis shows that TWFE bias depends on how unbalanced the panel is when treatment effects are dynamic, even if the exit and entry is not a function of treatment status. Bias is substantially lessened for balanced panels when treatment effects are homogeneous and dynamic, but it increases slightly when treatment effects are heterogenous and dynamic.
 
-Now, we compare the TWFE bias for unbalanced panels to the new estimators. First, we observe biased estimators for highly unbalanced panels in all estimators \uline{except the Sun and Abraham model}. This is particularly interesting given our reported equivalence between that estimator and the Callaway and Sant’Anna model in a balanced setting. Bias only occurs for the new estimators when the treatment effect is dynamic (datasets 3 through 6), though bias is very small when those dynamic effects are heterogeneous (datasets 4 and 6). We see that all the new estimators converge to the correct effect as the data becomes more balanced, while that is not true for the TWFE estimators. Finally, note that the direction of the bias is the same for all estimators within a dataset: when treatment effects increase over time (dataset 3), bias is negative, and vice versa when treatment effects decrease over time (dataset 5).\footnote{While exit and entry in our simulated data is not a function of treatment status, it is correlated indirectly. To investigate, we combined 100 randomly generated datasets using the same method as in our analysis, and stacked the data. Examining \hyperref[fig:dist-treat]{the distribution of the data over time}, we see that the earliest and latest periods of treatment status are most likely to be removed from the data, explaining the direction of bias. See \hyperref[sec:appendixb]{Appendix B}.}
+Now, we compare the TWFE bias for unbalanced panels to the new estimators. First, we observe biased estimators for highly unbalanced panels in all estimators \uline{except the Sun and Abraham model}. This is particularly interesting given our reported equivalence between that estimator and the Callaway and Sant’Anna model in a balanced setting. Bias only occurs for the new estimators when the treatment effect is dynamic (datasets 3 through 6), though bias is very small when those dynamic effects are heterogeneous (datasets 4 and 6). We see that all the new estimators converge to the correct effect as the data becomes more balanced, while that is not true for the TWFE estimators. Finally, note that the direction of the bias is the same for all estimators within a dataset: when treatment effects increase over time (dataset 3), bias is negative, and vice versa when treatment effects decrease over time (dataset 5).\footnote{While exit and entry in our simulated data is not a function of treatment status, it is correlated indirectly. To investigate, we combined 100 randomly generated datasets using the same method as in our analysis, and stacked the data. Examining \hyperref[fig:dist-treat]{the distribution of the data over time}, we see that the earliest and latest periods of treatment status are most likely to be removed from the data, explaining the direction of bias. See \hyperref[fig:dist-treat]{Figure 17} in \hyperref[sec:appendixb]{Appendix B}.}
 \begin{figure}[H]
     \centering
     \caption{Statistical Comparison of DiD Methods with True Average Effect by Percent Balanced}
-    \includegraphics[width=6in]{Figures/Binscatters by Percent Balanced Common Scale.png}
+    \includegraphics[width=6in]{Figures/Binscatters by Percent Balanced Common Scale.jpg}
     \label{fig:estimators-balanced}
 \end{figure}
 \section{Conclusion} \label{sec:conclusion}
@@ -338,6 +342,7 @@ Difference-in-differences analysis is one of the most important techniques for p
 \newpage
 \doublespace
 \printbibliography
+\addcontentsline{toc}{section}{References}
 
 \newpage
 \section*{Appendix A. Recommended Sensitivities} \label{sec:appendixa}
@@ -398,56 +403,56 @@ Here we provide a list of recommended sensitivities when performing staggered Di
 \begin{figure}[H]
     \centering
     \caption{Distributions of Monte Carlo Estimates in Table \ref{tab:estimators-never}}
-    \includegraphics[width=6in]{Figures/Histograms of Monte Carlo Estimates 1.png}
+    \includegraphics[width=6in]{Figures/Histograms of Monte Carlo Estimates 1.jpg}
     \label{fig:hist1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \caption{Distributions of Monte Carlo Estimates in Table \ref{tab:estimators-notyet}}
-    \includegraphics[width=6in]{Figures/Histograms of Monte Carlo Estimates 2.png}
+    \includegraphics[width=6in]{Figures/Histograms of Monte Carlo Estimates 2.jpg}
     \label{fig:hist2}
 \end{figure}
 
 \begin{figure}
     \centering
     \caption{TWFE Bias by Percent Never-Treated in the Data (Scatter Plot)}
-    \includegraphics[width=6in]{Figures/TWFE Bias by Percent Never Treated Scatter.png}
+    \includegraphics[width=6in]{Figures/TWFE Bias by Percent Never Treated Scatter.jpg}
     \label{fig:scatter-nevertreat}
 \end{figure}
 
 \begin{figure}
     \centering
     \caption{TWFE Bias by Percent Balanced (Scatter Plot)}
-    \includegraphics[width=6in]{Figures/TWFE Bias by Percent Balanced Scatter Crop.png}
+    \includegraphics[width=6in]{Figures/TWFE Bias by Percent Balanced Scatter Crop.jpg}
     \label{fig:scatter-balance}
 \end{figure}
 
 \begin{figure}
     \centering
     \caption{Statistical Comparison of DiD Methods with True Average Effect by Percent Balanced (Relative Scale)}
-    \includegraphics[width=6in]{Figures/Binscatters by Percent Balanced Relative Scale.png}
+    \includegraphics[width=6in]{Figures/Binscatters by Percent Balanced Relative Scale.jpg}
     \label{fig:bins-relative}
 \end{figure}
 
 \begin{figure}
     \centering
     \caption{Statistical Comparison of DiD Methods with True Average Effect by Percent Balanced (Scatter Plot)}
-    \includegraphics[width=6in]{Figures/Scatters by Percent Balanced Common Scale.png}
+    \includegraphics[width=6in]{Figures/Scatters by Percent Balanced Common Scale.jpg}
     \label{fig:scatters-common}
 \end{figure}
 
 \begin{figure}
     \centering
     \caption{Statistical Comparison of DiD Methods with True Average Effect by Percent Balanced (Scatter Plot) (Relative Scale)}
-    \includegraphics[width=6in]{Figures/Scatters by Percent Balanced Relative Scale.png}
+    \includegraphics[width=6in]{Figures/Scatters by Percent Balanced Relative Scale.jpg}
     \label{fig:scatters-relative}
 \end{figure}
 
 \begin{figure}
     \centering
-    \caption{Average Distribution of Data in Unbalanced Simulations by Treatment Status}
-    \includegraphics[width=6in]{Figures/Average Distribution of Data in Unbalanced Simulations by Treated.png}
+    \caption{Average Distribution of Data in Unbalanced Simulations by Treatment Status (Data Underlying Figure \ref{fig:pc-balance})}
+    \includegraphics[width=6in]{Figures/Average Distribution of Data in Unbalanced Simulations by Treated.jpg}
     \label{fig:dist-treat}
 \end{figure}
 
@@ -457,6 +462,7 @@ Here we provide a list of recommended sensitivities when performing staggered Di
 \begin{table}[htbp]\centering
 \def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 \caption{Regressions of Absolute TWFE Bias}
+\label{tab:sensitivity-table}
 \scalebox{0.7}{
 \begin{tabular}{l*{6}{c}}
 \hline\hline
@@ -508,6 +514,7 @@ Chi-Squared p-value &       0.000         &       0.000         &       0.000   
 \begin{table}[htbp]\centering
 \def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 \caption{Regressions of Absolute TWFE Bias (Interacted)}
+\label{tab:sensitivity-table-interact}
 \scalebox{0.5}{
 \begin{tabular}{p{4.5in}|*{6}{c}}
 \hline\hline
