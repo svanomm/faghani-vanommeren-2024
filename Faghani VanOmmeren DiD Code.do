@@ -1608,7 +1608,7 @@ save `a', replace
 restore
 merge 1:1 id time using `a', keep(3)
 
-return scalar pc_balanced = 100*(_N/${obs_count})
+return scalar pc_balanced = 100*(_N/`n')
 }
 
 gl effect = runiformint(-10, 10)
@@ -1663,7 +1663,9 @@ forval i = 1/6 {
 g y_`i' = x + fe_unit + fe_time + treat_effect_`i' + epsilon
 
 reghdfe y_`i' treat, a(id time)
-return scalar b_`i' = _b[treat]-$effect
+
+su treat_effect_`i' if treat
+return scalar b_`i' = _b[treat]-r(mean)
 }
 
 eret clear
@@ -1676,7 +1678,7 @@ use twfe_bias_sensitivities, replace
 * absolute bias
 forval i = 1/6 {
 	g abs_b_`i' = abs(b_`i')
-	label var abs_b_`i' "Absolute Bias, Data `i'"
+	label var abs_b_`i' "Data `i'"
 }
 
 replace count_units = count_units / 1000
@@ -1732,7 +1734,7 @@ eststo, title("`title'")
 esttab using "TWFE Bias Sensitivity Regression 1.tex", ///
 cells(b(star fmt(3) label(Coefficient)) se(par fmt(3) label(SE))) ///
 stats(N r2_a F p, fmt() ///
-labels("Row Count" "Adjusted R2" "F Statistic" "Chi-Squared p-value"))  ///
+labels("Row Count" "Adjusted $R^2$" "$F$ Statistic" "$\Chi^2$ p-value"))  ///
 label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Constant) 
 
 eststo clear
@@ -1764,6 +1766,6 @@ eststo, title("`title'")
 esttab using "TWFE Bias Sensitivity Regression 2.tex", ///
 cells(b(star fmt(3) label(Coefficient)) se(par fmt(3) label(SE))) ///
 stats(N r2_a F p, fmt() ///
-labels("Row Count" "Adjusted R2" "F Statistic" "Chi-Squared p-value"))  ///
+labels("Row Count" "Adjusted $R^2$" "$F$ Statistic" "$\Chi^2$ p-value"))  ///
 label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Constant)
 }
