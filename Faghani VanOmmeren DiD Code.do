@@ -1734,7 +1734,7 @@ eststo, title("`title'")
 esttab using "TWFE Bias Sensitivity Regression 1.tex", ///
 cells(b(star fmt(3) label(Coefficient)) se(par fmt(3) label(SE))) ///
 stats(N r2_a F p, fmt() ///
-labels("Row Count" "Adjusted $R^2$" "$F$ Statistic" "$\Chi^2$ p-value"))  ///
+labels("Row Count" "Adjusted R Squared" "F Statistic" "Chi Squared p-value"))  ///
 label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Constant) 
 
 eststo clear
@@ -1766,6 +1766,6 @@ eststo, title("`title'")
 esttab using "TWFE Bias Sensitivity Regression 2.tex", ///
 cells(b(star fmt(3) label(Coefficient)) se(par fmt(3) label(SE))) ///
 stats(N r2_a F p, fmt() ///
-labels("Row Count" "Adjusted $R^2$" "$F$ Statistic" "$\Chi^2$ p-value"))  ///
+labels("Row Count" "Adjusted R Squared" "F Statistic" "Chi Squared p-value"))  ///
 label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Constant)
 }
