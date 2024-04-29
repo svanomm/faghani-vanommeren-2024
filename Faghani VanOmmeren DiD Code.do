@@ -7,8 +7,6 @@ net install simulate2, from("https://janditzen.github.io/simulate2/") replace
 net install parallel, from("https://raw.github.com/gvegayon/parallel/master/") replace
 net install did2s, replace from("https://raw.githubusercontent.com/kylebutts/did2s_stata/main/ado/")
 
-cd "P:\svo\Diff in Diff Paper"
-
 gl num_replications = 1000
 
 * Creating data
@@ -850,7 +848,7 @@ psimulate2, seed(123) r(${num_replications}) p(4) saving(twfe_bias_by_pc_never_t
 
 use twfe_bias_by_pc_never_treated, clear
 
-binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_never_treated, line(connect) yti("Absolute Bias (|Estimate - ATT|)") xti("% Never Treated") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated)." "This chart made with the binscatter package.") colors(stc1 stc2 stc3 stc4 stc5 stc6)
+binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_never_treated, line(connect) yti("Estimated Treatment Effect") xti("% Never Treated") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated)." "This chart made with the binscatter package.") colors(stc1 stc2 stc3 stc4 stc5 stc6)
 
 graph export "TWFE Bias by Percent Never Treated.png", replace width(6000)
 graph export "TWFE Bias by Percent Never Treated.jpg", replace width(2000)
@@ -868,7 +866,7 @@ twoway ///
 (scatteri . ., mcol(stc4)) ///
 (scatteri . ., mcol(stc5)) ///
 (scatteri . ., mcol(stc6)) ///
-, yti("Estimate") xti("% Never Treated") legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated).")
+, yti("Estimated Treatment Effect") xti("% Never Treated") legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated).")
 
 graph export "TWFE Bias by Percent Never Treated Scatter.png", replace width(6000)
 graph export "TWFE Bias by Percent Never Treated Scatter.jpg", replace width(2000)
@@ -960,7 +958,7 @@ use twfe_bias_by_pc_balanced, clear
 
 format bias_* coef_* %03.1f
 
-binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_balanced if pc_balanced>=10, line(connect) yti("Estimate") xti("% Balanced") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.") xlab(10(10)90) colors(stc1 stc2 stc3 stc4 stc5 stc6)
+binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_balanced if pc_balanced>=10, line(connect) yti("Estimated Treatment Effect") xti("% Balanced") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.") xlab(10(10)90) colors(stc1 stc2 stc3 stc4 stc5 stc6)
 
 graph export "TWFE Bias by Percent Balanced Crop.png", replace width(6000)
 graph export "TWFE Bias by Percent Balanced Crop.jpg", replace width(2000)
@@ -978,7 +976,7 @@ twoway ///
 (scatteri . ., mcol(stc4)) ///
 (scatteri . ., mcol(stc5)) ///
 (scatteri . ., mcol(stc6)) ///
- if pc_balanced>=10, yti("Estimate") xti("% Balanced") ///
+ if pc_balanced>=10, yti("Estimated Treatment Effect") xti("% Balanced") ///
 legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) xlab(10(10)90) ///
 plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times).")
 
