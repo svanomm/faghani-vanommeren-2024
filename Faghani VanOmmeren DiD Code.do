@@ -7,6 +7,8 @@ net install simulate2, from("https://janditzen.github.io/simulate2/") replace
 net install parallel, from("https://raw.github.com/gvegayon/parallel/master/") replace
 net install did2s, replace from("https://raw.githubusercontent.com/kylebutts/did2s_stata/main/ado/")
 
+cd ""
+
 gl num_replications = 1000
 
 * Creating data
@@ -1515,7 +1517,7 @@ save combined_data, replace
 
 use combined_data, replace
 contract time treat
-twoway (hist time if !treat [fw=_freq], percent discrete col(blue%50)) (hist time if treat [fw=_freq], percent discrete col(red%50)), legend(order(1 "Untreated" 2 "Treated") pos(6) rows(1)) plotregion(lcol(black)) xti("") note("{bf: Note}: 100 randomly unbalanced datasets were generated and stacked.")
+twoway (hist time if !treat [fw=_freq], percent discrete col(blue%50)) (hist time if treat [fw=_freq], percent discrete col(red%50)), legend(order(1 "Untreated Observations" 2 "Treated Observations") pos(6) rows(1)) plotregion(lcol(black)) xti("Time Period in Data") note("{bf: Note}: 100 randomly unbalanced datasets were generated and stacked.")
 
 graph export "Average Distribution of Data in Unbalanced Simulations by Treated.png", replace width(6000)
 graph export "Average Distribution of Data in Unbalanced Simulations by Treated.jpg", replace width(2000)
@@ -1537,9 +1539,10 @@ cap program drop sim_unit_sensitivity
 program sim_unit_sensitivity, rclass
 	clear
 local times = runiformint(1, 10)*5
-local units = runiformint(1,  5)*500
+local units = runiformint(5, 10)*500
 local n = `times'*`units'
 
+return scalar n = `n'
 return scalar count_units = `units'
 return scalar count_times = `times'
 
@@ -1574,13 +1577,13 @@ g fe_unit = id/1000
 g fe_time = time/20
 
 g exposure_time = time - cohort if cohort > 0
-replace exposure_time     = 999 if cohort == 0
+replace exposure_time = 999 if cohort == 0
 
-g treat   = cond(!cohort, 0, time >= cohort)
+g treat = cond(!cohort, 0, time >= cohort)
 
 * unbalanced
 {
-gl cutoff = runiform(0, 0.2)
+gl cutoff = runiform(0.05, 0.2)
 return scalar cutoff = ${cutoff}
 
 gen rd =uniform()
@@ -1599,6 +1602,7 @@ replace drop_t2 = drop_t + 1 if drop_t == drop_t2
 
 replace drop_t = 0 if mi(drop_t)
 replace drop_t2 = 0 if mi(drop_t2)
+
 drop if !inrange(time, drop_t, drop_t2)  // create late entrant in the data
 keep id time
 tempfile a
@@ -1609,13 +1613,22 @@ merge 1:1 id time using `a', keep(3)
 return scalar pc_balanced = 100*(_N/`n')
 }
 
+su treat
+return scalar pc_treated = r(mean) * 100
+
 gl effect = runiformint(-10, 10)
 return scalar true_effect = $effect
 
 * individual-specific treatment effect modifier
 if runiform() < 0.25 {
 	return scalar effect_noise_flag = 1
+	if $effect == 0 {
+	gl effect_noise_parameter = abs(runiform(1/10, abs(1/2))) // required or the below rule will give undefined value
+	}
+	else {
 	gl effect_noise_parameter = abs(runiform(${effect}/10, abs(${effect}/2)))
+	}
+	
 	return scalar effect_noise_sd = ${effect_noise_parameter}
 	g treat_modifier = rnormal(0, ${effect_noise_parameter})
 }
@@ -1660,18 +1673,23 @@ g x = rnormal(${x_size}) + correlation_effect
 forval i = 1/6 {
 g y_`i' = x + fe_unit + fe_time + treat_effect_`i' + epsilon
 
-reghdfe y_`i' treat, a(id time)
-
+cap reghdfe y_`i' treat, a(id time)
+if _rc {
+return scalar regression_error = 1
+}
+else {
+return scalar regression_error = 0
 su treat_effect_`i' if treat
 return scalar b_`i' = _b[treat]-r(mean)
+}
 }
 
 eret clear
 end
 
-psimulate2, seed(123) r(50000) p(4) saving(twfe_bias_sensitivities): sim_unit_sensitivity
+psimulate2, seed(123) r(50000) p(4) saving(twfe_bias_sensitivities_new): sim_unit_sensitivity
 
-use twfe_bias_sensitivities, replace
+use twfe_bias_sensitivities_new, replace
 
 * absolute bias
 forval i = 1/6 {
@@ -1699,9 +1717,23 @@ label var pc_balanced2 "\% Balanced Squared"
 label var true_effect  "True Effect Size"
 label var effect_noise_sd  "Individual-Specific Treatment Noise"
 label var x_size "Covariate Size"
-label var x_correlation_parameter  "Covariate Treatment Correlation"
+label var x_correlation_parameter  "Covariate Treatment Factor"
 label var longest_exposure  "Longest Treatment Exposure Time"
+label var pc_treated  "\% Actively Treated"
 }
+
+preserve
+forval i = 1/6 {
+	label var abs_b_`i' "Absolute Bias, Treatment Effect `i'"
+}
+
+estpost su abs_b_* count_units count_times pc_balanced pc_treated pc_never_treated cohort_start cohort_end longest_exposure true_effect effect_noise_sd x_correlation_parameter x_size if !regression_error, d
+est store a
+
+esttab a using "sensitivity summary stats.tex", replace ///
+collabels(n Mean Std.Dev. Median Min Max) ///
+cells("count(fmt(%7.0fc)) mean(fmt(3)) sd(fmt(3)) p50(fmt(3)) min(fmt(3)) max(fmt(3))") label noobs nomtitles nonumbers
+restore
 
 eststo clear
 
@@ -1729,11 +1761,11 @@ if `i' == 6 {
 eststo, title("`title'")
 }
 
-esttab using "TWFE Bias Sensitivity Regression 1.tex", ///
+esttab using "sensitivity regression 1.tex", ///
 cells(b(star fmt(3) label(Coefficient)) se(par fmt(3) label(SE))) ///
 stats(N r2_a F p, fmt() ///
 labels("Row Count" "Adjusted R Squared" "F Statistic" "Chi Squared p-value"))  ///
-label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Constant) 
+label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Constant) nonumbers
 
 eststo clear
 
@@ -1761,9 +1793,9 @@ if `i' == 6 {
 eststo, title("`title'")
 }
 
-esttab using "TWFE Bias Sensitivity Regression 2.tex", ///
+esttab using "sensitivity regression 2.tex", ///
 cells(b(star fmt(3) label(Coefficient)) se(par fmt(3) label(SE))) ///
 stats(N r2_a F p, fmt() ///
 labels("Row Count" "Adjusted R Squared" "F Statistic" "Chi Squared p-value"))  ///
-label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Constant)
+label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Constant) nonumbers
 }
