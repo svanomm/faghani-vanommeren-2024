@@ -6,37 +6,33 @@
                     &\multicolumn{1}{c}{Data 1}&\multicolumn{1}{c}{Data 2}&\multicolumn{1}{c}{Data 3}&\multicolumn{1}{c}{Data 4}&\multicolumn{1}{c}{Data 5}&\multicolumn{1}{c}{Data 6}\\
                     &Coefficient/SE         &Coefficient/SE         &Coefficient/SE         &Coefficient/SE         &Coefficient/SE         &Coefficient/SE         \\
 \hline
-\% Never-Treated    &      -0.010\sym{***}&      -0.008\sym{***}&      -0.015\sym{***}&       0.046\sym{***}&      -0.014\sym{***}&       0.048\sym{***}\\
-                    &     (0.002)         &     (0.002)         &     (0.002)         &     (0.006)         &     (0.002)         &     (0.006)         \\
+\% Never-Treated    &      -0.010\sym{***}&      -0.009\sym{***}&      -0.016\sym{***}&       0.046\sym{***}&      -0.015\sym{***}&       0.048\sym{***}\\
+                    &     (0.002)         &     (0.002)         &     (0.004)         &     (0.007)         &     (0.004)         &     (0.007)         \\
 \% Never-Treated Squared&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&      -0.000\sym{**} &       0.000\sym{***}&      -0.000\sym{***}\\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-Count of Units (1000s)&       0.001         &       0.012         &       0.004         &      -0.010         &       0.013         &      -0.015         \\
-                    &     (0.007)         &     (0.008)         &     (0.009)         &     (0.025)         &     (0.009)         &     (0.025)         \\
-Count of Time Periods&      -0.001\sym{*}  &      -0.001         &      -0.032\sym{***}&       0.229\sym{***}&      -0.032\sym{***}&       0.229\sym{***}\\
+Count of Units (1000s)&       0.002         &       0.010         &      -0.022         &      -0.028         &      -0.013         &      -0.033         \\
+                    &     (0.007)         &     (0.009)         &     (0.017)         &     (0.026)         &     (0.017)         &     (0.026)         \\
+Count of Time Periods&      -0.002\sym{**} &       0.007\sym{***}&       0.084\sym{***}&       0.309\sym{***}&       0.084\sym{***}&       0.309\sym{***}\\
                     &     (0.001)         &     (0.001)         &     (0.001)         &     (0.002)         &     (0.001)         &     (0.002)         \\
-Longest Treatment Exposure Time&      -0.001         &       0.022\sym{***}&       0.300\sym{***}&       0.207\sym{***}&       0.300\sym{***}&       0.207\sym{***}\\
-                    &     (0.001)         &     (0.001)         &     (0.001)         &     (0.003)         &     (0.001)         &     (0.003)         \\
-\% Balanced         &      -0.006\sym{***}&      -0.006\sym{***}&      -0.030\sym{***}&      -0.062\sym{***}&      -0.029\sym{***}&      -0.061\sym{***}\\
-                    &     (0.001)         &     (0.001)         &     (0.001)         &     (0.004)         &     (0.001)         &     (0.004)         \\
+\% Balanced         &      -0.006\sym{***}&      -0.007\sym{***}&      -0.036\sym{***}&      -0.067\sym{***}&      -0.036\sym{***}&      -0.065\sym{***}\\
+                    &     (0.001)         &     (0.001)         &     (0.003)         &     (0.004)         &     (0.003)         &     (0.004)         \\
 \% Balanced Squared &       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}\\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-True Effect Size    &      -0.001         &       0.001         &       0.001         &       0.009\sym{*}  &      -0.000         &       0.010\sym{*}  \\
-                    &     (0.001)         &     (0.001)         &     (0.001)         &     (0.004)         &     (0.001)         &     (0.004)         \\
-Individual-Specific Treatment Noise&       0.011         &       0.011         &       0.016         &       0.009         &       0.019\sym{*}  &       0.022         \\
-                    &     (0.007)         &     (0.008)         &     (0.009)         &     (0.025)         &     (0.009)         &     (0.025)         \\
-True Effect Size $\times$ Individual-Specific Treatment Noise&      -0.000         &      -0.002         &      -0.001         &      -0.001         &      -0.001         &       0.000         \\
-                    &     (0.001)         &     (0.001)         &     (0.001)         &     (0.003)         &     (0.001)         &     (0.003)         \\
-Covariate Treatment Factor&       0.010         &       0.043\sym{**} &      -0.769\sym{***}&      -0.521\sym{***}&       0.778\sym{***}&       0.377\sym{***}\\
-                    &     (0.013)         &     (0.015)         &     (0.016)         &     (0.042)         &     (0.016)         &     (0.042)         \\
-Covariate Size      &      -0.000         &       0.002         &       0.001         &      -0.015\sym{*}  &      -0.000         &      -0.015\sym{*}  \\
-                    &     (0.002)         &     (0.002)         &     (0.002)         &     (0.007)         &     (0.002)         &     (0.007)         \\
-Covariate Treatment Factor $\times$ Covariate Size&       0.012\sym{**} &       0.012\sym{**} &       0.000         &      -0.037\sym{**} &       0.001         &      -0.068\sym{***}\\
-                    &     (0.004)         &     (0.005)         &     (0.005)         &     (0.014)         &     (0.005)         &     (0.014)         \\
-\% Never-Treated $\times$ Count of Units (1000s)&      -0.000         &      -0.000         &      -0.000         &       0.001         &      -0.000         &       0.001         \\
-                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.001)         &     (0.000)         &     (0.001)         \\
-\% Never-Treated $\times$ Count of Time Periods&       0.000         &      -0.000\sym{***}&       0.001\sym{***}&      -0.005\sym{***}&       0.001\sym{***}&      -0.005\sym{***}\\
-                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated $\times$ Longest Treatment Exposure Time&      -0.000         &       0.001\sym{***}&      -0.006\sym{***}&      -0.006\sym{***}&      -0.006\sym{***}&      -0.006\sym{***}\\
+True Effect Size    &      -0.001         &       0.000         &       0.000         &       0.008\sym{*}  &      -0.001         &       0.009\sym{*}  \\
+                    &     (0.001)         &     (0.001)         &     (0.003)         &     (0.004)         &     (0.003)         &     (0.004)         \\
+Individual-Specific Treatment Noise&       0.011         &       0.012         &       0.028         &       0.016         &       0.031         &       0.029         \\
+                    &     (0.007)         &     (0.009)         &     (0.017)         &     (0.026)         &     (0.017)         &     (0.026)         \\
+True Effect Size $\times$ Individual-Specific Treatment Noise&      -0.000         &      -0.001         &      -0.000         &      -0.000         &      -0.001         &       0.001         \\
+                    &     (0.001)         &     (0.001)         &     (0.002)         &     (0.003)         &     (0.002)         &     (0.003)         \\
+Covariate Treatment Factor&       0.010         &       0.044\sym{**} &      -0.737\sym{***}&      -0.498\sym{***}&       0.810\sym{***}&       0.401\sym{***}\\
+                    &     (0.013)         &     (0.016)         &     (0.029)         &     (0.045)         &     (0.029)         &     (0.045)         \\
+Covariate Size      &      -0.000         &       0.002         &      -0.003         &      -0.017\sym{*}  &      -0.004         &      -0.017\sym{*}  \\
+                    &     (0.002)         &     (0.002)         &     (0.004)         &     (0.007)         &     (0.005)         &     (0.007)         \\
+Covariate Treatment Factor $\times$ Covariate Size&       0.012\sym{**} &       0.013\sym{*}  &      -0.015         &      -0.047\sym{**} &      -0.014         &      -0.078\sym{***}\\
+                    &     (0.004)         &     (0.005)         &     (0.009)         &     (0.015)         &     (0.009)         &     (0.015)         \\
+\% Never-Treated $\times$ Count of Units (1000s)&      -0.000         &      -0.000         &       0.001         &       0.002         &       0.001         &       0.002         \\
+                    &     (0.000)         &     (0.000)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         \\
+\% Never-Treated $\times$ Count of Time Periods&       0.000         &      -0.000         &      -0.002\sym{***}&      -0.007\sym{***}&      -0.002\sym{***}&      -0.007\sym{***}\\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
 \% Never-Treated $\times$ \% Balanced&       0.000\sym{***}&       0.000\sym{***}&       0.001\sym{***}&       0.002\sym{***}&       0.001\sym{***}&       0.002\sym{***}\\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
@@ -44,44 +40,42 @@ Covariate Treatment Factor $\times$ Covariate Size&       0.012\sym{**} &       
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
 \% Never-Treated $\times$ True Effect Size&      -0.000         &      -0.000         &      -0.000         &      -0.000\sym{*}  &      -0.000         &      -0.000\sym{*}  \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated $\times$ Individual-Specific Treatment Noise&      -0.001\sym{*}  &      -0.001\sym{*}  &      -0.001\sym{**} &      -0.001         &      -0.001\sym{**} &      -0.002         \\
-                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.001)         &     (0.000)         &     (0.001)         \\
+\% Never-Treated $\times$ Individual-Specific Treatment Noise&      -0.001\sym{*}  &      -0.001\sym{*}  &      -0.002\sym{*}  &      -0.001         &      -0.002\sym{*}  &      -0.002         \\
+                    &     (0.000)         &     (0.000)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         \\
 \% Never-Treated $\times$ True Effect Size $\times$ Individual-Specific Treatment Noise&       0.000         &       0.000\sym{**} &       0.000         &       0.000         &       0.000         &       0.000         \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated $\times$ Covariate Treatment Factor&      -0.002\sym{***}&       0.002\sym{**} &       0.006\sym{***}&       0.004         &      -0.009\sym{***}&      -0.001         \\
+\% Never-Treated $\times$ Covariate Treatment Factor&      -0.002\sym{***}&       0.002\sym{*}  &       0.005\sym{***}&       0.003         &      -0.010\sym{***}&      -0.002         \\
                     &     (0.001)         &     (0.001)         &     (0.001)         &     (0.002)         &     (0.001)         &     (0.002)         \\
-\% Never-Treated $\times$ Covariate Size&       0.000         &      -0.000         &      -0.000         &       0.001\sym{*}  &       0.000         &       0.001\sym{*}  \\
+\% Never-Treated $\times$ Covariate Size&       0.000         &      -0.000         &       0.000         &       0.001\sym{*}  &       0.000         &       0.001\sym{*}  \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated $\times$ Covariate Treatment Factor $\times$ Covariate Size&      -0.001\sym{***}&      -0.001\sym{**} &      -0.000         &       0.001\sym{*}  &      -0.000         &       0.002\sym{***}\\
+\% Never-Treated $\times$ Covariate Treatment Factor $\times$ Covariate Size&      -0.001\sym{***}&      -0.001\sym{**} &       0.000         &       0.002\sym{*}  &       0.000         &       0.002\sym{***}\\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.001)         &     (0.000)         &     (0.001)         \\
-\% Never-Treated Squared $\times$ Count of Units (1000s)&      -0.000         &       0.000         &       0.000         &      -0.000         &       0.000         &      -0.000         \\
+\% Never-Treated Squared $\times$ Count of Units (1000s)&      -0.000         &       0.000         &      -0.000         &      -0.000         &      -0.000         &      -0.000         \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated Squared $\times$ Count of Time Periods&      -0.000         &       0.000\sym{***}&      -0.000\sym{***}&       0.000\sym{***}&      -0.000\sym{***}&       0.000\sym{***}\\
-                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated Squared $\times$ Longest Treatment Exposure Time&      -0.000         &      -0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}\\
+\% Never-Treated Squared $\times$ Count of Time Periods&      -0.000         &       0.000         &       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}\\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
 \% Never-Treated Squared $\times$ \% Balanced&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}\\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
 \% Never-Treated Squared $\times$ \% Balanced Squared&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}&       0.000\sym{***}\\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated Squared $\times$ True Effect Size&       0.000         &       0.000         &       0.000         &       0.000         &       0.000         &       0.000\sym{*}  \\
+\% Never-Treated Squared $\times$ True Effect Size&       0.000         &       0.000         &       0.000         &       0.000\sym{*}  &       0.000         &       0.000\sym{*}  \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated Squared $\times$ Individual-Specific Treatment Noise&       0.000\sym{**} &       0.000\sym{**} &       0.000\sym{***}&       0.000         &       0.000\sym{**} &       0.000\sym{*}  \\
+\% Never-Treated Squared $\times$ Individual-Specific Treatment Noise&       0.000\sym{**} &       0.000\sym{**} &       0.000\sym{**} &       0.000         &       0.000\sym{*}  &       0.000\sym{*}  \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
 \% Never-Treated Squared $\times$ True Effect Size $\times$ Individual-Specific Treatment Noise&      -0.000\sym{*}  &      -0.000\sym{**} &      -0.000         &      -0.000         &      -0.000         &      -0.000         \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated Squared $\times$ Covariate Treatment Factor&       0.000\sym{***}&       0.000         &      -0.000         &       0.000         &       0.000\sym{***}&      -0.000         \\
+\% Never-Treated Squared $\times$ Covariate Treatment Factor&       0.000\sym{***}&       0.000         &       0.000         &       0.000         &       0.000\sym{***}&      -0.000         \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated Squared $\times$ Covariate Size&      -0.000         &       0.000         &       0.000         &      -0.000\sym{*}  &      -0.000         &      -0.000\sym{*}  \\
+\% Never-Treated Squared $\times$ Covariate Size&      -0.000         &       0.000         &      -0.000         &      -0.000\sym{*}  &      -0.000         &      -0.000\sym{*}  \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-\% Never-Treated Squared $\times$ Covariate Treatment Factor $\times$ Covariate Size&       0.000\sym{***}&       0.000\sym{*}  &       0.000         &      -0.000         &       0.000         &      -0.000\sym{**} \\
+\% Never-Treated Squared $\times$ Covariate Treatment Factor $\times$ Covariate Size&       0.000\sym{***}&       0.000\sym{**} &      -0.000         &      -0.000\sym{*}  &      -0.000         &      -0.000\sym{**} \\
                     &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
-Constant            &       0.456\sym{***}&       0.428\sym{***}&       1.298\sym{***}&      -1.335\sym{***}&       1.250\sym{***}&      -1.366\sym{***}\\
-                    &     (0.041)         &     (0.046)         &     (0.050)         &     (0.136)         &     (0.051)         &     (0.135)         \\
+Constant            &       0.456\sym{***}&       0.425\sym{***}&       1.232\sym{***}&      -1.380\sym{***}&       1.184\sym{***}&      -1.411\sym{***}\\
+                    &     (0.041)         &     (0.051)         &     (0.092)         &     (0.143)         &     (0.093)         &     (0.143)         \\
 \hline
 Row Count           &   49961.000         &   49961.000         &   49961.000         &   49961.000         &   49961.000         &   49961.000         \\
-Adjusted R Squared  &       0.017         &       0.201         &       0.823         &       0.682         &       0.820         &       0.683         \\
-F Statistic         &      25.140         &     360.143         &    6655.473         &    3069.236         &    6495.490         &    3074.162         \\
+Adjusted R Squared  &       0.016         &       0.050         &       0.403         &       0.647         &       0.399         &       0.647         \\
+F Statistic         &      26.817         &      83.462         &    1054.185         &    2856.657         &    1037.056         &    2857.664         \\
 Chi Squared p-value &       0.000         &       0.000         &       0.000         &       0.000         &       0.000         &       0.000         \\
 \hline\hline
 \multicolumn{7}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
