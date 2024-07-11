@@ -1,0 +1,35 @@
+\begin{table}[htbp]\centering
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\caption{Examples of Antitrust Difference-in-Differences Analysis}
+\label{tab:antitrust-did}
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\scalebox{0.7}{
+\begin{tabular}{lcccc}
+\hline\hline
+
+                    Paper/Case & TWFE? & Staggered? & Time-Varying & Robust Estimators  \\
+                    & & & Covariates? & Used? \\
+                    \hline 
+                    \citet{brot2024toolittle}                          & Yes & Yes & Yes & Yes \\
+                    \citet{hosken2022vertical}                         & Yes & Yes & No  & No \\
+                    \citet{prager2021employer}                         & Yes & Yes & Yes & Yes \\
+                    \textit{Mr. Dee's Inc. v. Inmar, Inc.} (2020)      & No  & No  & Yes & No \\
+                    \textit{In re Dealer Management Systems} (2019)    & Yes & No  & Yes & No \\
+                    \citet{carlton2019legacy}                          & Yes & Yes & Yes & No \\
+                    \textit{Shane Group, Inc. v. BCBS Michigan} (2013) & No  & \;Yes$^1$ & Yes & No   \\
+                    \textit{Messner v. Northshore} (2012)              & Yes & No  & Yes & No \\
+                    \citet{ashenfelter2010effect}                      & \;Yes$^2$ & No  & No  & No \\
+                    \citet{goolsbee2008incumbents}                     & Yes & Yes & Yes & No \\
+                    \citet{taylor2005michigan}                         & No  & No  & \;Yes$^3$ & No \\
+                    \citet{berry2001mergers}$^4$                       & No  & No  & Yes & No \\
+                    \textit{FTC v. Staples, Inc.} (1997)               & Yes & Yes & Yes & No \\
+\hline\hline
+\multicolumn{5}{l}{\footnotesize Note: for court cases, the year shown here is when the relevant DiD expert report was written.} \\
+\multicolumn{5}{l}{\footnotesize 1. While the treatment effect was staggered, the expert ran separate regressions for each treated unit.} \\
+\multicolumn{5}{l}{\footnotesize 2. The authors used fixed effects for each month of the year, rather than a traditional TWFE's fixed effects} \\ 
+\multicolumn{5}{l}{\footnotesize \phantom{2. }for each time period in the data.}\\
+\multicolumn{5}{l}{\footnotesize 3. The authors used three indicator variables to control for unrelated events that could affect the outcome variable.}\\
+\multicolumn{5}{l}{\footnotesize 4. DiD was used as a sensitivity, not a main model in this paper.}\\
+\end{tabular}
+}
+\end{table}
