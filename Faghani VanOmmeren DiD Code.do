@@ -1084,9 +1084,9 @@ psimulate2, seed(123) r(${num_replications}) p(4) saving(twfe_bias_by_pc_balance
 
 use twfe_bias_by_pc_balancednew, clear
 
-format bias_* coef_* %03.1f
+format bias_* coef_* %3.0f
 
-binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_balanced, line(connect) yti("Estimated Treatment Effect") xti("% Balanced") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10,000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.") xlab(10(10)90) colors(stc1 stc2 stc3 stc4 stc5 stc6)
+binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_balanced, line(connect) yti("Estimated Treatment Effect") xti("% Balanced") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 50,000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.") xlab(10(10)90) colors(stc1 stc2 stc3 stc4 stc5 stc6) xscale(r(0 90)) xlab(0(10)90)
 
 graph export "TWFE Bias by Percent Balanced.png", replace width(6000)
 graph export "TWFE Bias by Percent Balanced.jpg", replace width(2000)
@@ -1105,8 +1105,8 @@ twoway ///
 (scatteri . ., mcol(stc5)) ///
 (scatteri . ., mcol(stc6)) ///
 , yti("Estimated Treatment Effect") xti("% Balanced") ///
-legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) xlab(10(10)90) ///
-plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10,000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times).")
+legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) xlab(0(10)90) ///
+plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 50,000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times).") xscale(r(0 90)) ylab(0(1)9)
 
 graph export "TWFE Bias by Percent Balanced Scatter.png", replace width(6000)
 graph export "TWFE Bias by Percent Balanced Scatter.jpg", replace width(2000)
