@@ -525,7 +525,6 @@ di `base'
 fvset base `base' exposure_time_adj
 
 g treated = cohort>0
-g post_   = cond(!cohort, time >= 15, time >= cohort)
 g treat   = cond(!cohort, 0, time >= cohort)
 
 keep if treated & time < 15
@@ -785,6 +784,7 @@ graph export "Histograms of Monte Carlo Estimates 2.jpg", replace width(2000)
 
 * TWFE bias by % of never-treated
 {
+
 cap program drop sim_unit
 program sim_unit, rclass
 clear
@@ -807,13 +807,16 @@ restore
 
 merge m:1 id using `to_merge', nogen
 
-g treat   = cond(!cohort, 0, time >= cohort)
+g treat = cond(!cohort, 0, time >= cohort)
 
 count if cohort == 0
 local num = r(N)
 count if !treat
 di 100*`num'/r(N)
 return scalar pc_never_treated = 100*`num'/r(N)
+
+count if treat
+return scalar count_treat = r(N)
 
 g fe_unit = id/1000
 g fe_time = time/20
@@ -845,9 +848,8 @@ return scalar bias_`i' = _b[treat]-$effect
 eret clear
 end
 
-gl num_replications = 10000
-psimulate2, seed(123) r(${num_replications}) p(4) saving(twfe_bias_by_pc_never_treated): sim_unit
-
+gl num_replications = 100
+psimulate2, seed(123) r(${num_replications}) p(4) saving(twfe_bias_by_pc_never_treated2): sim_unit
 use twfe_bias_by_pc_never_treated, clear
 
 binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_never_treated, line(connect) yti("Estimated Treatment Effect") xti("% Never Treated") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = ${num_replications} replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated)." "This chart made with the binscatter package.") colors(stc1 stc2 stc3 stc4 stc5 stc6)
@@ -872,6 +874,107 @@ twoway ///
 
 graph export "TWFE Bias by Percent Never Treated Scatter.png", replace width(6000)
 graph export "TWFE Bias by Percent Never Treated Scatter.jpg", replace width(2000)
+}
+
+
+* TWFE bias by % of never-treated (new version)
+{
+cap program drop sim_unit
+program sim_unit, rclass
+clear
+set obs 30000
+g id = mod(_n, 1500)+1
+sort id
+g time = mod(_n, 20)+1
+
+gl pc_never_treated = runiform(0, 0.9)
+
+preserve
+keep if time == 1
+sort id
+g prob = runiform()
+g cohort = 0 if prob < $pc_never_treated
+replace cohort = runiformint(10, 15) if mi(cohort)
+tempfile to_merge
+save `to_merge'
+restore
+
+merge m:1 id using `to_merge', nogen
+
+g treat = cond(!cohort, 0, time >= cohort)
+
+keep if time < 15 // make it comparable to analysis above on not-yet-treated
+
+count if cohort == 0
+local num = r(N)
+count if !treat
+di 100*`num'/r(N)
+return scalar pc_never_treated = 100*`num'/r(N)
+
+count
+return scalar count = r(N)
+
+count if treat
+return scalar count_treat = r(N)
+
+g fe_unit = id/1000
+g fe_time = time/20
+
+g exposure_time = time - cohort if cohort > 0
+replace exposure_time     = 999 if cohort == 0
+
+gl effect = 5
+g treat_effect_1 = $effect * treat // constant, homogeneous
+su cohort if treat
+g treat_effect_2 =  ($effect + cohort - r(mean)) * treat // constant, heterogenous
+su exposure_time if treat
+g treat_effect_3 = ($effect + exposure_time - r(mean)) * treat // dynamic, homogeneous
+g treat_effect_5 = ($effect - exposure_time + r(mean)) * treat // dynamic, homogeneous
+
+g cohorttime = (cohort) + ((cohort/5-2) * exposure_time)
+su cohorttime if treat
+g treat_effect_4 = ($effect + cohorttime - r(mean)) * treat // dynamic, heterogenous
+g treat_effect_6 = ($effect - cohorttime + r(mean)) * treat // dynamic, heterogenous
+g epsilon = rnormal()
+
+forval i = 1/6 {
+g y_`i' = fe_unit + fe_time + treat_effect_`i' + epsilon
+reghdfe y_`i' treat, a(id time)
+return scalar coef_`i' = _b[treat]
+return scalar bias_`i' = _b[treat]-$effect
+}
+eret clear
+end
+
+gl num_replications = 50000
+psimulate2, seed(123) r(${num_replications}) p(4) saving(twfe_bias_by_pc_never_treatednew): sim_unit
+use twfe_bias_by_pc_never_treatednew, clear
+
+binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_never_treated, line(connect) yti("Estimated Treatment Effect") xti("% Never Treated") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 50,000 replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated)." "This chart made with the binscatter package.") colors(stc1 stc2 stc3 stc4 stc5 stc6)
+
+binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_never_treated, line(connect) yti("Estimated Treatment Effect") xti("% Never Treated") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 50,000 replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated)." "This chart made with the binscatter package.") colors(stc1 stc2 stc3 stc4 stc5 stc6) ylab(#6)
+
+
+graph export "TWFE Bias by Percent Never Treated (new).png", replace width(6000)
+graph export "TWFE Bias by Percent Never Treated (new).jpg", replace width(2000)
+
+twoway ///
+(scatter coef_1 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_2 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_3 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_4 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_5 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatter coef_6 pc_never_treated, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
+(scatteri . ., mcol(stc1)) ///
+(scatteri . ., mcol(stc2)) ///
+(scatteri . ., mcol(stc3)) ///
+(scatteri . ., mcol(stc4)) ///
+(scatteri . ., mcol(stc5)) ///
+(scatteri . ., mcol(stc6)) ///
+, yti("Estimated Treatment Effect") xti("% Never Treated") legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 50,000 replications. TWFE estimates use the reghdfe package. Monte Carlo simulations run with the simulate2 package." "% Never Treated = (Count Never-Treated) / (Count All Untreated).")
+
+graph export "TWFE Bias by Percent Never Treated Scatter (new).png", replace width(6000)
+graph export "TWFE Bias by Percent Never Treated Scatter (new).jpg", replace width(2000)
 }
 
 * TWFE Bias by % balanced
@@ -934,6 +1037,7 @@ save `a', replace
 restore
 merge 1:1 id time using `a', keep(3)
 
+return scalar n = _N
 return scalar pc_balanced = 100*(_N/${obs_count})
 
 su treat
@@ -971,19 +1075,21 @@ return scalar bias_`i' = _b[treat]-$effect
 }
 }
 eret clear
+
+*/
 end
 
-gl num_replications = 10000
-psimulate2, seed(123) r(${num_replications}) p(4) saving(twfe_bias_by_pc_balanced): sim_unit
+gl num_replications = 50000
+psimulate2, seed(123) r(${num_replications}) p(4) saving(twfe_bias_by_pc_balancednew): sim_unit
 
-use twfe_bias_by_pc_balanced, clear
+use twfe_bias_by_pc_balancednew, clear
 
 format bias_* coef_* %03.1f
 
-binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_balanced if pc_balanced>=10, line(connect) yti("Estimated Treatment Effect") xti("% Balanced") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10,000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.") xlab(10(10)90) colors(stc1 stc2 stc3 stc4 stc5 stc6)
+binscatter coef_1 coef_2 coef_3 coef_4 coef_5 coef_6 pc_balanced, line(connect) yti("Estimated Treatment Effect") xti("% Balanced") legend(order(1 "1: Homogeneous, Static" 2 "2: Heterogeneous, Static" 3 "3: Homogeneous, Dynamic" 4 "4: Heterogeneous, Dynamic" 5 "5: Homogeneous, Dynamic (Decreasing)" 6 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10,000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times)." "This chart made with the binscatter package.") xlab(10(10)90) colors(stc1 stc2 stc3 stc4 stc5 stc6)
 
-graph export "TWFE Bias by Percent Balanced Crop.png", replace width(6000)
-graph export "TWFE Bias by Percent Balanced Crop.jpg", replace width(2000)
+graph export "TWFE Bias by Percent Balanced.png", replace width(6000)
+graph export "TWFE Bias by Percent Balanced.jpg", replace width(2000)
 
 twoway ///
 (scatter coef_1 pc_balanced, msize(tiny) msymbol(smcircle_hollow) mcol(%50)) ///
@@ -998,12 +1104,12 @@ twoway ///
 (scatteri . ., mcol(stc4)) ///
 (scatteri . ., mcol(stc5)) ///
 (scatteri . ., mcol(stc6)) ///
- if pc_balanced>=10, yti("Estimated Treatment Effect") xti("% Balanced") ///
+, yti("Estimated Treatment Effect") xti("% Balanced") ///
 legend(order(7 "1: Homogeneous, Static" 8 "2: Heterogeneous, Static" 9 "3: Homogeneous, Dynamic" 10 "4: Heterogeneous, Dynamic" 11 "5: Homogeneous, Dynamic (Decreasing)" 12 "6: Heterogeneous, Dynamic (Decreasing)") pos(6) rows(3)) xlab(10(10)90) ///
 plotregion(lcol(black)) yline(5, lcol(maroon) lp(dash)) note("{bf: Notes}: n = 10,000 replications. TWFE estimates use the reghdfe package." "Monte Carlo simulations run with the simulate2 package. % Balanced defined as (# observations)/(#units * #times).")
 
-graph export "TWFE Bias by Percent Balanced Scatter Crop.png", replace width(6000)
-graph export "TWFE Bias by Percent Balanced Scatter Crop.jpg", replace width(2000)
+graph export "TWFE Bias by Percent Balanced Scatter.png", replace width(6000)
+graph export "TWFE Bias by Percent Balanced Scatter.jpg", replace width(2000)
 }
 
 * Comparing performance of various estimators by % balanced
@@ -1259,6 +1365,40 @@ graph combine ${graph_list}, xcommon ycommon rows(10) name(combinedscatter, repl
 graph export "Scatters by Percent Balanced Common Scale.png", replace width(6000)
 graph export "Scatters by Percent Balanced Common Scale.jpg", replace width(2000)
 
+* Smaller graph
+{
+gl graph_list ""
+
+foreach i in twfe_non sa_non grdnr_non borys_non callwy_non {
+forval j = 1/4 {
+	* labels
+	{
+	if "`i'" == "twfe_non" {
+	local title "TWFE, No Control"
+	}
+	if "`i'" == "sa_non" {
+	local title "Sun/Abraham, No Control"
+	}
+	if "`i'" == "borys_non" {
+	local title "Borusyak et al., No Control"
+	}
+	if "`i'" == "grdnr_non" {
+	local title "Gardner, No Control"
+	}
+	if "`i'" == "callwy_non" {
+	local title "Callaway/Sant'Anna, No Control"
+	}
+	}
+	
+	gl graph_list "${graph_list} `i'_`j'"
+} 
+}
+
+graph combine ${graph_list}, xcommon ycommon rows(5) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
+graph export "Scatters by Percent Balanced Common Scale (Small).png", replace width(6000)
+graph export "Scatters by Percent Balanced Common Scale (Small).jpg", replace width(2000)
+}
+
 * relative scale
 {
 gl graph_list ""
@@ -1315,6 +1455,40 @@ forval j = 1/6 {
 graph combine ${graph_list}, xcommon rows(10) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
 graph export "Scatters by Percent Balanced Relative Scale.png", replace width(6000)
 graph export "Scatters by Percent Balanced Relative Scale.jpg", replace width(2000)
+
+* Smaller graph
+{
+gl graph_list ""
+
+foreach i in twfe_non sa_non grdnr_non borys_non callwy_non {
+forval j = 1/4 {
+	* labels
+	{
+	if "`i'" == "twfe_non" {
+	local title "TWFE, No Control"
+	}
+	if "`i'" == "sa_non" {
+	local title "Sun/Abraham, No Control"
+	}
+	if "`i'" == "borys_non" {
+	local title "Borusyak et al., No Control"
+	}
+	if "`i'" == "grdnr_non" {
+	local title "Gardner, No Control"
+	}
+	if "`i'" == "callwy_non" {
+	local title "Callaway/Sant'Anna, No Control"
+	}
+	}
+	
+	gl graph_list "${graph_list} `i'_`j'"
+} 
+}
+
+graph combine ${graph_list}, xcommon rows(5) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
+graph export "Scatters by Percent Balanced Relative Scale (Small).png", replace width(6000)
+graph export "Scatters by Percent Balanced Relative Scale (Small).jpg", replace width(2000)
+}
 }
 } 
 
@@ -1369,6 +1543,39 @@ forval j = 1/6 {
 graph combine ${graph_list}, xcommon ycommon rows(10) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "This chart made with the binscatter package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
 graph export "Binscatters by Percent Balanced Common Scale.png", replace width(6000)
 graph export "Binscatters by Percent Balanced Common Scale.jpg", replace width(2000)
+
+* smaller graph
+{
+gl graph_list ""
+
+foreach i in twfe_non sa_non grdnr_non borys_non callwy_non {
+forval j = 1/4 {
+	* labels
+	{
+	if "`i'" == "twfe_non" {
+	local title "TWFE, No Control"
+	}
+	if "`i'" == "sa_non" {
+	local title "Sun/Abraham, No Control"
+	}
+	if "`i'" == "borys_non" {
+	local title "Borusyak et al., No Control"
+	}
+	if "`i'" == "grdnr_non" {
+	local title "Gardner, No Control"
+	}
+	if "`i'" == "callwy_non" {
+	local title "Callaway/Sant'Anna, No Control"
+	}
+	}
+	gl graph_list "${graph_list} `i'_`j'"
+} 
+}
+
+graph combine ${graph_list}, xcommon ycommon rows(5) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "This chart made with the binscatter package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
+graph export "Binscatters by Percent Balanced Common Scale (Small).png", replace width(6000)
+graph export "Binscatters by Percent Balanced Common Scale (Small).jpg", replace width(2000)
+}
 
 * relative scale
 {
@@ -1426,6 +1633,54 @@ forval j = 1/6 {
 graph combine ${graph_list}, xcommon rows(10) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "This chart made with the binscatter package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
 graph export "Binscatters by Percent Balanced Relative Scale.png", replace width(6000)
 graph export "Binscatters by Percent Balanced Relative Scale.jpg", replace width(2000)
+
+* Smaller graph
+{
+gl graph_list ""
+
+foreach i in twfe_non sa_non grdnr_non borys_non callwy_non {
+forval j = 1/4 {
+	* labels
+	{
+	if "`i'" == "twfe_non" {
+	local title "TWFE, No Control"
+	}
+	if "`i'" == "twfe_ctrl" {
+	local title "TWFE, Control"
+	}
+	if "`i'" == "sa_non" {
+	local title "Sun/Abraham, No Control"
+	}
+	if "`i'" == "wooldr_ctrl" {
+	local title "Wooldridge, Control"
+	}
+	if "`i'" == "borys_ctrl" {
+	local title "Borusyak et al., Control"
+	}
+	if "`i'" == "borys_non" {
+	local title "Borusyak et al., No Control"
+	}
+	if "`i'" == "grdnr_ctrl" {
+	local title "Gardner, Control"
+	}
+	if "`i'" == "grdnr_non" {
+	local title "Gardner, No Control"
+	}
+	if "`i'" == "callwy_non" {
+	local title "Callaway/Sant'Anna, No Control"
+	}
+	if "`i'" == "callwy_ctrl" {
+	local title "Callaway/Sant'Anna, Control"
+	}
+	}
+	gl graph_list "${graph_list} `i'_`j'"
+} 
+}
+
+graph combine ${graph_list}, xcommon rows(5) name(combinedscatter, replace) imargin(zero)  graphregion(margin(zero)) ysize(7.5) note("{bf: Notes}: n = ${num_replications} replications. True ATT is 5, represented by the dashed red line." "TWFE, Sun/Abraham, and Wooldridge estimates use the reghdfe package. Gardner estimates use the did2s package." "Borusyak et al. estimates use the did_imputation package. Monte Carlo simulations run with the simulate2 package." "This chart made with the binscatter package." "% Balanced defined as (# observations)/(#units * #times).", size(tiny))
+graph export "Binscatters by Percent Balanced Relative Scale (Small).png", replace width(6000)
+graph export "Binscatters by Percent Balanced Relative Scale (Small).jpg", replace width(2000)
+}
 }
 } 
 }
@@ -1776,7 +2031,7 @@ restore
 eststo clear
 
 forval i = 1/6 {
-reg abs_b_`i' pc_never_treated pc_never_treated2 count_units count_times longest_exposure pc_balanced pc_balanced2 true_effect effect_noise_sd x_correlation_parameter x_size	
+reg abs_b_`i' pc_never_treated pc_never_treated2 count_units count_times pc_balanced pc_balanced2 true_effect effect_noise_sd x_correlation_parameter x_size	
 
 if `i' == 1 {
 	local title "1: Homogeneous, Static"
@@ -1808,7 +2063,7 @@ label legend replace ti("Regression Against Absolute Bias") varlabels(_cons Cons
 eststo clear
 
 forval i = 1/6 {
-reg abs_b_`i' (c.pc_never_treated c.pc_never_treated2)##(c.count_units c.count_times c.longest_exposure c.pc_balanced c.pc_balanced2 c.true_effect c.effect_noise_sd c.true_effect#c.effect_noise_sd c.x_correlation_parameter c.x_size c.x_correlation_parameter#c.x_size) 
+reg abs_b_`i' (c.pc_never_treated c.pc_never_treated2)##(c.count_units c.count_times c.pc_balanced c.pc_balanced2 c.true_effect c.effect_noise_sd c.true_effect#c.effect_noise_sd c.x_correlation_parameter c.x_size c.x_correlation_parameter#c.x_size) 
 
 if `i' == 1 {
 	local title "1: Homogeneous, Static"
